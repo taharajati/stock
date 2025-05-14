@@ -1,0 +1,38 @@
+.footer {
+  background-color: #333;
+  color: white;
+  padding: 30px 0;
+  margin-top: 50px;
+  direction: rtl;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.footer-logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links a {
+  color: #ccc;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: white;
+}
+
+.footer-copyright {
+  font-size: 14px;
+  color: #aaa;
+} 
