@@ -14,7 +14,7 @@ const apiRoutes = require('./routes/api');
 require('./config/passport');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5003;
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-analysis')
@@ -25,7 +25,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-ana
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: ['http://taha.betaoption.ir', 'http://localhost:5001', 'http://37.32.5.160:5001'],
   credentials: true
 }));
 
@@ -38,7 +38,7 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24, // 1 day
     httpOnly: true,
     sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production'
+    secure: false // Set to true in production with HTTPS
   }
 }));
 
@@ -56,6 +56,6 @@ app.get('/', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 }); 
