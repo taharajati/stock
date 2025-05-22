@@ -19,13 +19,9 @@ function LoginPage() {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleGoogleLogin = async () => {
-    try {
-      await login();
-      // Redirect will be handled by the useEffect above
-    } catch (error) {
-      console.error('Login error:', error);
-    }
+  const handleGoogleLogin = () => {
+    // Redirect to backend Google OAuth route
+    window.location.href = '/auth/google';
   };
 
   const handleChange = (e) => {
