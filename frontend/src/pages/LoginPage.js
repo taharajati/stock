@@ -21,7 +21,7 @@ function LoginPage() {
 
   const handleGoogleLogin = () => {
     // Redirect to backend Google OAuth route
-    window.location.href = 'https://taha.betaoption.ir/auth/google';
+    window.location.href = 'http://taha.betaoption.ir/auth/google';
   };
 
   const handleChange = (e) => {
