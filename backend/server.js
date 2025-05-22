@@ -13,13 +13,13 @@ const apiRoutes = require('./routes/api');
 require('./config/passport');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5003;
 
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5000',
+  origin: process.env.CLIENT_URL || 'http://localhost:5001',
   credentials: true
 }));
 
