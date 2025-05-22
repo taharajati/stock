@@ -1,30 +1,24 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import api from '../services/api.js';
 
-const AuthContext = createContext(null);
+const AuthContext = createContext();
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+export function useAuth() {
+  return useContext(AuthContext);
+}
 
-export const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in (e.g., check localStorage or session)
+    // Check if user is logged in
     const checkAuth = async () => {
       try {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-        }
+        const response = await api.get('/auth/me');
+        setUser(response.data);
       } catch (error) {
-        console.error('Error checking auth:', error);
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -33,41 +27,26 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = async (userData) => {
-    try {
-      // Here you would typically make an API call to authenticate
-      setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
-      return true;
-    } catch (error) {
-      console.error('Login error:', error);
-      return false;
-    }
+  const login = () => {
+    // Redirect to Google Auth endpoint
+    window.location.href = `${api.defaults.baseURL}/auth/google`;
   };
 
-  const register = async (userData) => {
+  const logout = async () => {
     try {
-      // Here you would typically make an API call to register
-      setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
-      return true;
+      await api.get('/auth/logout');
+      setUser(null);
     } catch (error) {
-      console.error('Registration error:', error);
-      return false;
+      console.error('Error logging out:', error);
     }
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
   };
 
   const value = {
     user,
     loading,
     login,
-    register,
-    logout
+    logout,
+    isAuthenticated: !!user,
   };
 
   return (
@@ -75,4 +54,4 @@ export const AuthProvider = ({ children }) => {
       {!loading && children}
     </AuthContext.Provider>
   );
-}; 
+} 
