@@ -1,24 +1,30 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import api from '../services/api.js';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
-export function useAuth() {
-  return useContext(AuthContext);
-}
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
-export function AuthProvider({ children }) {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in
+    // Check if user is logged in (e.g., check localStorage or session)
     const checkAuth = async () => {
       try {
-        const response = await api.get('/auth/me');
-        setUser(response.data);
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        }
       } catch (error) {
-        setUser(null);
+        console.error('Error checking auth:', error);
       } finally {
         setLoading(false);
       }
@@ -27,26 +33,41 @@ export function AuthProvider({ children }) {
     checkAuth();
   }, []);
 
-  const login = () => {
-    // Redirect to Google Auth endpoint
-    window.location.href = `${api.defaults.baseURL}/auth/google`;
+  const login = async (userData) => {
+    try {
+      // Here you would typically make an API call to authenticate
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
+    }
   };
 
-  const logout = async () => {
+  const register = async (userData) => {
     try {
-      await api.get('/auth/logout');
-      setUser(null);
+      // Here you would typically make an API call to register
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      return true;
     } catch (error) {
-      console.error('Error logging out:', error);
+      console.error('Registration error:', error);
+      return false;
     }
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
   };
 
   const value = {
     user,
     loading,
     login,
-    logout,
-    isAuthenticated: !!user,
+    register,
+    logout
   };
 
   return (
@@ -54,4 +75,4 @@ export function AuthProvider({ children }) {
       {!loading && children}
     </AuthContext.Provider>
   );
-} 
+}; 

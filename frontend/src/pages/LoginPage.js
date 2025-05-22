@@ -1,10 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
 
 function LoginPage() {
   const { user, isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   
   useEffect(() => {
     // If already authenticated, redirect to dashboard
@@ -19,6 +25,43 @@ function LoginPage() {
       // Redirect will be handled by the useEffect above
     } catch (error) {
       console.error('Login error:', error);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await fetch('/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'خطا در ورود');
+      }
+
+      navigate('/dashboard');
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -39,14 +82,65 @@ function LoginPage() {
             <div className="tracking-wide text-sm text-blue-600 font-semibold mb-1">تحلیل بورس</div>
             <h2 className="text-2xl font-bold text-gray-800 mb-8">ورود به حساب کاربری</h2>
             
-            <div className="mb-8 text-gray-600">
-              <p>برای ورود به سامانه تحلیل بورس و دسترسی به ابزارهای تحلیلی بازار سرمایه، از حساب گوگل خود استفاده کنید.</p>
-            </div>
-            
-            <div className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                  ایمیل
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  رمز عبور
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  required
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+              </div>
+
+              {error && (
+                <div className="text-red-500 text-sm">
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                {loading ? 'در حال ورود...' : 'ورود'}
+              </button>
+            </form>
+
+            <div className="mt-6">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-gray-500">یا</span>
+                </div>
+              </div>
+
               <button 
                 onClick={handleGoogleLogin}
-                className="flex items-center justify-center w-full bg-white border border-gray-300 rounded-lg shadow-sm py-3 px-4 text-gray-700 hover:bg-gray-50 transition-colors"
+                className="mt-6 flex items-center justify-center w-full bg-white border border-gray-300 rounded-lg shadow-sm py-3 px-4 text-gray-700 hover:bg-gray-50 transition-colors"
               >
                 <svg className="ml-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -56,25 +150,6 @@ function LoginPage() {
                 </svg>
                 ورود با حساب گوگل
               </button>
-              
-              <div className="text-center">
-                <span className="text-sm text-gray-500">
-                  یا
-                </span>
-              </div>
-              
-              <button 
-                onClick={() => window.location.href = "/register"}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm py-3 px-4 transition-colors"
-              >
-                ثبت‌نام در تحلیل بورس
-              </button>
-            </div>
-            
-            <div className="mt-8 pt-6 border-t border-gray-100">
-              <p className="text-sm text-gray-500 text-center">
-                با ورود به سامانه، <a href="/terms" className="text-blue-600 hover:underline">شرایط و قوانین</a> استفاده از سرویس را می‌پذیرید.
-              </p>
             </div>
           </div>
         </div>
