@@ -25,7 +25,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-ana
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: ['http://taha.betaoption.ir', 'http://37.32.5.160:5001'],
+  origin: ['http://taha.betaoption.ir', 'http://localhost:5001', 'http://37.32.5.160:5001'],
   credentials: true
 }));
 
