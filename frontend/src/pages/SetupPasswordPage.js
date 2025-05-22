@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.js';
+import { useAuth } from '../context/AuthContext';
 
 function SetupPasswordPage() {
   const navigate = useNavigate();

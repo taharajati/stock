@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://taha.betaoption.ir:5003',
+  baseURL: 'http://localhost:5000',
   withCredentials: true, // Important for cookies/session
   headers: {
     'Content-Type': 'application/json',
