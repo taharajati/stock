@@ -19,7 +19,7 @@ passport.deserializeUser(async (id, done) => {
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: 'https://taha.betaoption.ir/auth/google/callback',
+    callbackURL: 'http://taha.betaoption.ir/auth/google/callback',
     proxy: true
   },
   async (accessToken, refreshToken, profile, done) => {
