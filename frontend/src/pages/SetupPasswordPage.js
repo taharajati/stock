@@ -1,116 +1,117 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
+import api from '../services/api.js';
 
 function SetupPasswordPage() {
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
-    if (password.length < 8) {
-      setError('رمز عبور باید حداقل ۸ کاراکتر باشد');
-      return;
-    }
 
     if (password !== confirmPassword) {
       setError('رمز عبور و تکرار آن مطابقت ندارند');
       return;
     }
 
-    setLoading(true);
+    setIsLoading(true);
+
     try {
-      const response = await fetch('/auth/setup-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ password }),
-        credentials: 'include'
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'خطا در تنظیم رمز عبور');
-      }
-
+      await api.post('/auth/setup-password', { password });
       navigate('/dashboard');
     } catch (error) {
-      setError(error.message);
+      if (error.response?.data?.requirements) {
+        setError(
+          <div>
+            <p className="font-bold mb-2">{error.response.data.error}</p>
+            <ul className="list-disc list-inside">
+              {error.response.data.requirements.map((req, index) => (
+                <li key={index}>{req}</li>
+              ))}
+            </ul>
+          </div>
+        );
+      } else {
+        setError(error.response?.data?.error || 'خطا در تنظیم رمز عبور');
+      }
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  if (!user) {
-    navigate('/login');
-    return null;
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            تنظیم رمز عبور
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            برای ورود با ایمیل و رمز عبور، لطفا رمز عبور خود را تنظیم کنید
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="password" className="sr-only">رمز عبور</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="رمز عبور"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="confirm-password" className="sr-only">تکرار رمز عبور</label>
-              <input
-                id="confirm-password"
-                name="confirm-password"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="تکرار رمز عبور"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-          </div>
-
+    <div className="py-16 rtl">
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="p-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">تنظیم رمز عبور</h2>
+          
           {error && (
-            <div className="text-red-500 text-sm text-center">
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
               {error}
             </div>
           )}
 
-          <div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                رمز عبور
+              </label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                تکرار رمز عبور
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div className="bg-gray-50 p-4 rounded-md">
+              <h3 className="text-sm font-medium text-gray-700 mb-2">رمز عبور باید شامل موارد زیر باشد:</h3>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• حداقل 8 کاراکتر</li>
+                <li>• حداقل یک حرف بزرگ</li>
+                <li>• حداقل یک حرف کوچک</li>
+                <li>• حداقل یک عدد</li>
+                <li>• حداقل یک کاراکتر خاص (@$!%*?&)</li>
+              </ul>
+            </div>
+
             <button
               type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              disabled={isLoading}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              {loading ? 'در حال ثبت...' : 'ثبت رمز عبور'}
+              {isLoading ? 'در حال ذخیره...' : 'ذخیره رمز عبور'}
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

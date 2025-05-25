@@ -17,78 +17,128 @@ router.get('/google/callback',
   (req, res) => {
     // If user hasn't set a password, redirect to password setup page
     if (!req.user.hasSetPassword) {
-      res.redirect(`${process.env.CLIENT_URL || 'http://localhost:3000'}/setup-password`);
+      res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5001'}/setup-password`);
     } else {
-      res.redirect(`${process.env.CLIENT_URL || 'http://localhost:3000'}/dashboard`);
+      res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5001'}/dashboard`);
     }
   }
 );
 
+// Email/password login
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: 'ایمیل و رمز عبور الزامی هستند' });
+    }
+
+    // Find user by email and explicitly select password field
+    const user = await User.findOne({ email }).select('+password');
+    
+    if (!user) {
+      console.log('User not found:', email);
+      return res.status(401).json({ error: 'ایمیل یا رمز عبور اشتباه است' });
+    }
+
+    // Check if user has set a password
+    if (!user.hasSetPassword) {
+      console.log('User has not set password:', email);
+      return res.status(401).json({ error: 'لطفا ابتدا با گوگل وارد شوید و رمز عبور خود را تنظیم کنید' });
+    }
+
+    // Compare password
+    const isMatch = await user.comparePassword(password);
+    console.log('Password match result:', isMatch);
+
+    if (!isMatch) {
+      return res.status(401).json({ error: 'ایمیل یا رمز عبور اشتباه است' });
+    }
+
+    // Log in user
+    req.login(user, (err) => {
+      if (err) {
+        console.error('Login error:', err);
+        return res.status(500).json({ error: 'خطا در ورود به سیستم' });
+      }
+      
+      // Remove password from response
+      const userResponse = {
+        id: user._id,
+        email: user.email,
+        displayName: user.displayName,
+        photo: user.photo
+      };
+
+      res.json({ 
+        message: 'ورود موفقیت‌آمیز',
+        user: userResponse
+      });
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ 
+      error: 'خطا در ورود به سیستم',
+      details: error.message 
+    });
+  }
+});
+
 // Setup password after Google login
 router.post('/setup-password', async (req, res) => {
   if (!req.isAuthenticated()) {
-    return res.status(401).json({ error: 'Not authenticated' });
+    return res.status(401).json({ error: 'لطفا ابتدا وارد شوید' });
   }
 
   const { password } = req.body;
   
-  if (!password || password.length < 8) {
-    return res.status(400).json({ error: 'Password must be at least 8 characters long' });
+  if (!password) {
+    return res.status(400).json({ error: 'رمز عبور الزامی است' });
   }
 
   try {
     const user = await User.findById(req.user.id);
+    
+    // Validate password format
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        error: 'رمز عبور باید حداقل 8 کاراکتر باشد و شامل موارد زیر باشد:',
+        requirements: [
+          'حداقل یک حرف بزرگ',
+          'حداقل یک حرف کوچک',
+          'حداقل یک عدد',
+          'حداقل یک کاراکتر خاص (@$!%*?&)'
+        ]
+      });
+    }
+
     user.password = password;
     user.hasSetPassword = true;
     await user.save();
     
-    res.json({ message: 'Password set successfully' });
+    res.json({ message: 'رمز عبور با موفقیت تنظیم شد' });
   } catch (error) {
     console.error('Error setting password:', error);
-    res.status(500).json({ error: 'Error setting password' });
-  }
-});
-
-// Email/password login
-router.post('/login', async (req, res, next) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.findOne({ email }).select('+password');
-    
-    if (!user) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: error.message });
     }
-
-    if (!user.hasSetPassword) {
-      return res.status(401).json({ error: 'Please login with Google first to set up your password' });
-    }
-
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Invalid email or password' });
-    }
-
-    req.login(user, (err) => {
-      if (err) {
-        return next(err);
-      }
-      res.json({ message: 'Logged in successfully' });
-    });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Error during login' });
+    res.status(500).json({ error: 'خطا در تنظیم رمز عبور' });
   }
 });
 
 // Logout route
-router.get('/logout', (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      return res.status(500).json({ error: 'Error logging out' });
-    }
-    res.redirect(process.env.CLIENT_URL || 'http://localhost:3000');
-  });
+router.post('/logout', async (req, res) => {
+  try {
+    // Clear the token cookie
+    res.clearCookie('token');
+    
+    // Send success response
+    res.json({ message: 'Successfully logged out' });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ message: 'Error logging out' });
+  }
 });
 
 // Get current logged in user
@@ -96,7 +146,7 @@ router.get('/me', (req, res) => {
   if (req.isAuthenticated()) {
     return res.status(200).json(req.user);
   }
-  return res.status(401).json({ error: 'Not authenticated' });
+  return res.status(401).json({ error: 'کاربر وارد نشده است' });
 });
 
 // Check authentication status

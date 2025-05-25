@@ -10,6 +10,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -17,8 +18,10 @@ export function AuthProvider({ children }) {
       try {
         const response = await api.get('/auth/me');
         setUser(response.data);
+        setIsAuthenticated(true);
       } catch (error) {
         setUser(null);
+        setIsAuthenticated(false);
       } finally {
         setLoading(false);
       }
@@ -32,12 +35,38 @@ export function AuthProvider({ children }) {
     window.location.href = `${api.defaults.baseURL}/auth/google`;
   };
 
+  const loginWithEmail = async (email, password) => {
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      setUser(response.data.user);
+      setIsAuthenticated(true);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const logout = async () => {
     try {
-      await api.get('/auth/logout');
+      // Call the logout endpoint
+      await api.post('/auth/logout');
+      
+      // Clear local storage
+      localStorage.removeItem('token');
+      
+      // Clear auth state
       setUser(null);
+      setIsAuthenticated(false);
+      
+      // Clear any other auth-related data
+      setLoading(false);
     } catch (error) {
-      console.error('Error logging out:', error);
+      console.error('Logout error:', error);
+      // Even if the server request fails, we should still clear local state
+      localStorage.removeItem('token');
+      setUser(null);
+      setIsAuthenticated(false);
+      setLoading(false);
     }
   };
 
@@ -45,8 +74,9 @@ export function AuthProvider({ children }) {
     user,
     loading,
     login,
+    loginWithEmail,
     logout,
-    isAuthenticated: !!user,
+    isAuthenticated,
   };
 
   return (
