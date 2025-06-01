@@ -20,9 +20,9 @@ module.exports = {
     },
     {
       name: 'betaoption-frontend',
-      script: 'serve',
-      cwd: './frontend',
-      args: '-s build -l 5001',
+      script: 'http-server',
+      cwd: './frontend/build',
+      args: '-p 5001',
       instances: 1,
       autorestart: true,
       watch: false,
