@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5003',
+  baseURL: 'https://easyvest.ir',
   withCredentials: true, // Important for cookies/session
   headers: {
     'Content-Type': 'application/json',
