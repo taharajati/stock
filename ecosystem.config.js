@@ -20,7 +20,8 @@ module.exports = {
     },
     {
       name: 'betaoption-frontend',
-      script: './frontend/server.js',
+      script: 'serve',
+      args: '-s build -l 5001',
       instances: 1,
       autorestart: true,
       watch: false,
