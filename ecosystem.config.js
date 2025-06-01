@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'betaoption-backend',
-      script: 'backend/server.js',
+      script: './backend/server.js',
       instances: 1,
       autorestart: true,
       watch: false,
@@ -20,7 +20,7 @@ module.exports = {
     },
     {
       name: 'betaoption-frontend',
-      script: 'frontend/server.js',
+      script: './frontend/server.js',
       instances: 1,
       autorestart: true,
       watch: false,
