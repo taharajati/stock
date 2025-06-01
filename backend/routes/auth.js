@@ -124,7 +124,7 @@ router.post('/setup-password', async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
     res.status(500).json({ error: 'خطا در تنظیم رمز عبور' });
-  }
+    }
 });
 
 // Logout route
@@ -138,7 +138,7 @@ router.post('/logout', async (req, res) => {
   } catch (error) {
     console.error('Logout error:', error);
     res.status(500).json({ message: 'Error logging out' });
-  }
+    }
 });
 
 // Get current logged in user
