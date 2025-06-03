@@ -38,7 +38,7 @@ app.use(cors({
   origin: ['https://easyvest.ir', 'https://www.easyvest.ir', 'http://localhost:5001'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With']
 }));
 
 // Session configuration
@@ -65,7 +65,9 @@ app.use((req, res, next) => {
     cookies: req.cookies,
     session: req.session,
     protocol: req.protocol,
-    secure: req.secure
+    secure: req.secure,
+    hostname: req.hostname,
+    ip: req.ip
   });
   next();
 });
@@ -73,6 +75,9 @@ app.use((req, res, next) => {
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Trust proxy
+app.set('trust proxy', 1);
 
 // Routes
 app.use('/auth', authRoutes);
