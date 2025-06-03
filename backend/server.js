@@ -55,6 +55,18 @@ app.use(session({
   proxy: true
 }));
 
+// Debug middleware
+app.use((req, res, next) => {
+  console.log('Request:', {
+    method: req.method,
+    path: req.path,
+    headers: req.headers,
+    cookies: req.cookies,
+    session: req.session
+  });
+  next();
+});
+
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
