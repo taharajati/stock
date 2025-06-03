@@ -20,7 +20,8 @@ passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: `https://easyvest.ir/auth/google/callback`,
-    proxy: true
+    proxy: true,
+    passReqToCallback: true
   },
   async (req, accessToken, refreshToken, profile, done) => {
     try {
