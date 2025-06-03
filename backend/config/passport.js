@@ -19,9 +19,8 @@ passport.deserializeUser(async (id, done) => {
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: `${process.env.BACKEND_URL || 'http://localhost:5003'}/auth/google/callback`,
-    proxy: true,
-    passReqToCallback: true
+    callbackURL: `http://easyvest.ir/auth/google/callback`,
+    proxy: true
   },
   async (req, accessToken, refreshToken, profile, done) => {
     try {
