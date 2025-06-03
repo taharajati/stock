@@ -32,7 +32,9 @@ export function AuthProvider({ children }) {
 
   const login = () => {
     // Redirect to Google Auth endpoint
-    window.location.href = `${api.defaults.baseURL}/auth/google`;
+    const authUrl = `${api.defaults.baseURL}/auth/google`;
+    console.log('Redirecting to:', authUrl);
+    window.location.href = authUrl;
   };
 
   const loginWithEmail = async (email, password) => {
