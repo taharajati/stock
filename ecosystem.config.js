@@ -13,8 +13,8 @@ module.exports = {
         MONGODB_URI: 'mongodb+srv://taha:taha12345@cluster0.8jqgx.mongodb.net/betaoption?retryWrites=true&w=majority',
         JWT_SECRET: 'your-secret-key',
         CLIENT_URL: 'https://easyvest.ir',
-        GOOGLE_CLIENT_ID: 'your-google-client-id',
-        GOOGLE_CLIENT_SECRET: 'your-google-client-secret',
+        GOOGLE_CLIENT_ID: '1094757684567-8jqgx.mongodb.net',
+        GOOGLE_CLIENT_SECRET: 'GOCSPX-8jqgx.mongodb.net',
         GOOGLE_CALLBACK_URL: 'https://easyvest.ir/auth/google/callback'
       }
     },
