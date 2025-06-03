@@ -38,7 +38,7 @@ app.use(cors({
   origin: ['https://easyvest.ir', 'https://www.easyvest.ir', 'http://localhost:5001'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
 // Session configuration
@@ -50,7 +50,8 @@ app.use(session({
     secure: true,
     httpOnly: true,
     sameSite: 'lax',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    domain: '.easyvest.ir'
   },
   proxy: true
 }));
@@ -62,7 +63,9 @@ app.use((req, res, next) => {
     path: req.path,
     headers: req.headers,
     cookies: req.cookies,
-    session: req.session
+    session: req.session,
+    protocol: req.protocol,
+    secure: req.secure
   });
   next();
 });
