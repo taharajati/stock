@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://easyvest.ir',
+  baseURL: process.env.REACT_APP_API_URL || 'https://easyvest.ir',
   withCredentials: true, // Important for cookies/session
   headers: {
     'Content-Type': 'application/json',
