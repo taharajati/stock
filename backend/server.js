@@ -34,8 +34,25 @@ const connectDB = async () => {
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+
+// Determine if we're in production
+const isProduction = process.env.NODE_ENV === 'production';
+const allowedOrigins = isProduction 
+  ? ['https://easyvest.ir', 'https://www.easyvest.ir']
+  : ['http://localhost:5001', 'https://easyvest.ir', 'https://www.easyvest.ir'];
+
+// CORS configuration
 app.use(cors({
-  origin: ['https://easyvest.ir', 'https://www.easyvest.ir', 'http://localhost:5001'],
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With']
@@ -43,17 +60,17 @@ app.use(cors({
 
 // Session configuration
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true,
+    secure: isProduction, // Only use secure cookies in production
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: isProduction ? 'none' : 'lax', // Use 'none' in production, 'lax' in development
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    domain: '.easyvest.ir'
+    domain: isProduction ? '.easyvest.ir' : undefined // Only set domain in production
   },
-  proxy: true
+  proxy: isProduction // Only trust proxy in production
 }));
 
 // Debug middleware

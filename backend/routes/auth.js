@@ -3,6 +3,36 @@ const passport = require('passport');
 const User = require('../models/User');
 const router = express.Router();
 
+// Root auth route handler
+router.get('/', (req, res) => {
+  const authInfo = {
+    status: 'Auth service is running',
+    isAuthenticated: req.isAuthenticated(),
+    user: req.isAuthenticated() ? {
+      id: req.user._id,
+      email: req.user.email,
+      displayName: req.user.displayName
+    } : null,
+    availableEndpoints: {
+      google: {
+        login: 'GET /auth/google',
+        callback: 'GET /auth/google/callback'
+      },
+      email: {
+        login: 'POST /auth/login',
+        setupPassword: 'POST /auth/setup-password'
+      },
+      session: {
+        status: 'GET /auth/status',
+        currentUser: 'GET /auth/me',
+        logout: 'POST /auth/logout'
+      }
+    }
+  };
+  
+  res.json(authInfo);
+});
+
 // Start Google OAuth login process
 router.get('/google', passport.authenticate('google', {
   scope: ['profile', 'email']
@@ -154,6 +184,32 @@ router.get('/status', (req, res) => {
   res.json({
     isAuthenticated: req.isAuthenticated(),
     user: req.isAuthenticated() ? req.user : null
+  });
+});
+
+// Error handler middleware for auth routes
+router.use((err, req, res, next) => {
+  console.error('Auth route error:', err);
+  
+  // Handle specific error types
+  if (err.name === 'AuthenticationError') {
+    return res.status(401).json({
+      error: 'Authentication failed',
+      message: err.message
+    });
+  }
+  
+  if (err.name === 'ValidationError') {
+    return res.status(400).json({
+      error: 'Validation error',
+      message: err.message
+    });
+  }
+  
+  // Default error response
+  res.status(500).json({
+    error: 'Internal server error',
+    message: isProduction ? 'An error occurred' : err.message
   });
 });
 
