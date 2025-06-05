@@ -22,7 +22,12 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 5001
       },
-      args: '-s -l 5001'
+      args: '-s -l 5001 --no-clipboard --no-request-logging --rewrite-all --single',
+      ignore_watch: ['node_modules', 'build'],
+      watch_options: {
+        followSymlinks: false,
+        usePolling: true
+      }
     }
   ]
 }; 
