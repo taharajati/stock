@@ -34,22 +34,42 @@ router.get('/', (req, res) => {
 });
 
 // Start Google OAuth login process
-router.get('/google', passport.authenticate('google', {
-  scope: ['profile', 'email']
-}));
+router.get('/google', (req, res, next) => {
+  console.log('Starting Google OAuth login process');
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+    state: req.query.redirect || '/dashboard'
+  })(req, res, next);
+});
 
 // Google OAuth callback
 router.get('/google/callback', 
-  passport.authenticate('google', { 
-    failureRedirect: '/',
-    failureMessage: true
-  }),
+  (req, res, next) => {
+    console.log('Received Google OAuth callback');
+    passport.authenticate('google', { 
+      failureRedirect: '/login',
+      failureMessage: true,
+      session: true
+    })(req, res, next);
+  },
   (req, res) => {
+    console.log('Google OAuth successful, user:', {
+      id: req.user._id,
+      email: req.user.email,
+      displayName: req.user.displayName
+    });
+
+    // Get redirect URL from state or use default
+    const redirectUrl = req.query.state || '/dashboard';
+    const baseUrl = process.env.CLIENT_URL || 'http://localhost:5001';
+
     // If user hasn't set a password, redirect to password setup page
     if (!req.user.hasSetPassword) {
-      res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5001'}/setup-password`);
+      console.log('User needs to set password, redirecting to setup page');
+      res.redirect(`${baseUrl}/setup-password`);
     } else {
-      res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5001'}/dashboard`);
+      console.log('User authenticated, redirecting to:', redirectUrl);
+      res.redirect(`${baseUrl}${redirectUrl}`);
     }
   }
 );

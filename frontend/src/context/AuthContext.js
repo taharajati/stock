@@ -33,42 +33,62 @@ export function AuthProvider({ children }) {
   const login = () => {
     // Redirect to Google Auth endpoint
     const authUrl = `${api.defaults.baseURL}/auth/google`;
-    console.log('Redirecting to:', authUrl);
+    console.log('Redirecting to Google auth:', authUrl);
+    
+    // Store the current URL to redirect back after login
+    const currentPath = window.location.pathname;
+    if (currentPath !== '/login') {
+      sessionStorage.setItem('redirectAfterLogin', currentPath);
+    }
+    
     window.location.href = authUrl;
   };
 
   const loginWithEmail = async (email, password) => {
     try {
+      console.log('Attempting email login for:', email);
       const response = await api.post('/auth/login', { email, password });
+      console.log('Login successful:', response.data);
+      
       setUser(response.data.user);
       setIsAuthenticated(true);
+      
+      // Redirect to stored path or dashboard
+      const redirectPath = sessionStorage.getItem('redirectAfterLogin') || '/dashboard';
+      sessionStorage.removeItem('redirectAfterLogin');
+      window.location.href = redirectPath;
+      
       return response.data;
     } catch (error) {
+      console.error('Login failed:', error.response?.data || error.message);
       throw error;
     }
   };
 
   const logout = async () => {
     try {
-      // Call the logout endpoint
+      console.log('Attempting logout');
       await api.post('/auth/logout');
+      console.log('Logout successful');
       
-      // Clear local storage
+      // Clear all auth-related data
       localStorage.removeItem('token');
-      
-      // Clear auth state
+      sessionStorage.clear();
       setUser(null);
       setIsAuthenticated(false);
-      
-      // Clear any other auth-related data
       setLoading(false);
+      
+      // Redirect to home page
+      window.location.href = '/';
     } catch (error) {
       console.error('Logout error:', error);
-      // Even if the server request fails, we should still clear local state
+      // Even if the server request fails, clear local state
       localStorage.removeItem('token');
+      sessionStorage.clear();
       setUser(null);
       setIsAuthenticated(false);
       setLoading(false);
+      window.location.href = '/';
     }
   };
 

@@ -34,20 +34,29 @@ app.use(cookieParser());
 // CORS configuration
 const allowedOrigins = isProduction 
   ? ['https://easyvest.ir', 'https://www.easyvest.ir']
-  : ['http://localhost:5001', 'https://easyvest.ir', 'https://www.easyvest.ir'];
+  : ['http://localhost:5001', 'http://[::1]:5001', 'https://easyvest.ir', 'https://www.easyvest.ir'];
 
 app.use(cors({
   origin: function(origin, callback) {
-    if (!origin) return callback(null, true);
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) {
+      console.log('Request with no origin - allowing');
+      return callback(null, true);
+    }
+    
+    console.log('Checking origin:', origin);
     if (allowedOrigins.indexOf(origin) === -1) {
+      console.log('Origin not allowed:', origin);
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
+    console.log('Origin allowed:', origin);
     return callback(null, true);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Set-Cookie']
 }));
 
 // Session configuration with MongoDB store
