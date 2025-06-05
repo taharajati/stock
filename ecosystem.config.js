@@ -20,9 +20,10 @@ module.exports = {
       cwd: './frontend/build',
       env: {
         NODE_ENV: 'production',
-        PORT: 5001
+        PORT: 5001,
+        REACT_APP_API_URL: 'https://easyvest.ir'
       },
-      args: '-s -l 5001 --no-clipboard --no-request-logging --rewrite-all --single',
+      args: '-s -l 5001 --no-clipboard --no-request-logging --single --cors',
       ignore_watch: ['node_modules', 'build'],
       watch_options: {
         followSymlinks: false,
