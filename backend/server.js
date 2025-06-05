@@ -75,11 +75,11 @@ const sessionConfig = {
     }
   }),
   cookie: {
-    secure: isProduction,
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 14 * 24 * 60 * 60 * 1000, // = 14 days
-    sameSite: isProduction ? 'none' : 'lax',
-    domain: isProduction ? '.easyvest.ir' : undefined,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    domain: process.env.NODE_ENV === 'production' ? '.easyvest.ir' : undefined,
     path: '/'
   },
   name: 'sessionId' // Change session cookie name
@@ -87,6 +87,9 @@ const sessionConfig = {
 
 // Apply session middleware
 app.use(session(sessionConfig));
+
+// Trust proxy
+app.set('trust proxy', 1);
 
 // Debug middleware
 app.use((req, res, next) => {
@@ -110,9 +113,6 @@ app.use((req, res, next) => {
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-
-// Trust proxy
-app.set('trust proxy', 1);
 
 // Routes
 app.use('/auth', authRoutes);

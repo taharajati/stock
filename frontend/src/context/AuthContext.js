@@ -31,8 +31,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = () => {
-    // Redirect to Google Auth endpoint
-    const authUrl = `${api.defaults.baseURL}/auth/google`;
+    // Redirect to Google Auth endpoint using relative URL
+    const authUrl = '/auth/google';
     console.log('Redirecting to Google auth:', authUrl);
     
     // Store the current URL to redirect back after login
