@@ -13,22 +13,6 @@ module.exports = {
         GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
         GOOGLE_CALLBACK_URL: 'https://easyvest.ir/auth/google/callback'
       }
-    },
-    {
-      name: 'easyvest-frontend',
-      script: 'serve',
-      cwd: './frontend/build',
-      env: {
-        NODE_ENV: 'production',
-        PORT: 5001,
-        REACT_APP_API_URL: 'https://easyvest.ir'
-      },
-      args: '-s -l 5001 --no-clipboard --no-request-logging --single --cors',
-      ignore_watch: ['node_modules', 'build'],
-      watch_options: {
-        followSymlinks: false,
-        usePolling: true
-      }
     }
   ]
 }; 
