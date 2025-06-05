@@ -149,8 +149,9 @@ const startServer = async (retries = 3) => {
       throw new Error('Failed to connect to MongoDB');
     }
 
-    const server = app.listen(PORT, () => {
+    const server = app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server running on port ${PORT} in ${isProduction ? 'production' : 'development'} mode`);
+      console.log(`Server listening on IPv4 and IPv6`);
     });
 
     server.on('error', (error) => {
