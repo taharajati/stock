@@ -36,20 +36,23 @@ router.get('/', (req, res) => {
 // Start Google OAuth login process
 router.get('/google', (req, res, next) => {
   console.log('Starting Google OAuth login process');
+  const state = req.query.redirect || '/dashboard';
   passport.authenticate('google', {
     scope: ['profile', 'email'],
-    state: req.query.redirect || '/dashboard'
+    state: state,
+    prompt: 'select_account'
   })(req, res, next);
 });
 
 // Google OAuth callback
 router.get('/google/callback', 
   (req, res, next) => {
-    console.log('Received Google OAuth callback');
+    console.log('Received Google OAuth callback with state:', req.query.state);
     passport.authenticate('google', { 
       failureRedirect: '/login',
       failureMessage: true,
-      session: true
+      session: true,
+      keepSessionInfo: true
     })(req, res, next);
   },
   (req, res) => {
@@ -61,7 +64,7 @@ router.get('/google/callback',
 
     // Get redirect URL from state or use default
     const redirectUrl = req.query.state || '/dashboard';
-    const baseUrl = process.env.CLIENT_URL || 'http://localhost:5001';
+    const baseUrl = process.env.CLIENT_URL || 'https://easyvest.ir';
 
     // If user hasn't set a password, redirect to password setup page
     if (!req.user.hasSetPassword) {

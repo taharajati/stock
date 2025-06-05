@@ -55,8 +55,9 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With', 'Accept'],
-  exposedHeaders: ['Set-Cookie']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['Set-Cookie'],
+  maxAge: 86400 // 24 hours
 }));
 
 // Session configuration with MongoDB store
@@ -68,15 +69,24 @@ const sessionConfig = {
     mongoUrl: process.env.MONGODB_URI,
     ttl: 14 * 24 * 60 * 60, // = 14 days
     autoRemove: 'native',
-    touchAfter: 24 * 3600 // = 24 hours
+    touchAfter: 24 * 3600, // = 24 hours
+    crypto: {
+      secret: process.env.SESSION_SECRET || 'your-secure-session-secret-key-change-this'
+    }
   }),
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: isProduction,
     httpOnly: true,
     maxAge: 14 * 24 * 60 * 60 * 1000, // = 14 days
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
-  }
+    sameSite: isProduction ? 'none' : 'lax',
+    domain: isProduction ? '.easyvest.ir' : undefined,
+    path: '/'
+  },
+  name: 'sessionId' // Change session cookie name
 };
+
+// Apply session middleware
+app.use(session(sessionConfig));
 
 // Debug middleware
 app.use((req, res, next) => {
@@ -85,7 +95,10 @@ app.use((req, res, next) => {
     path: req.path,
     headers: req.headers,
     cookies: req.cookies,
-    session: req.session,
+    session: req.session ? {
+      id: req.session.id,
+      cookie: req.session.cookie
+    } : null,
     protocol: req.protocol,
     secure: req.secure,
     hostname: req.hostname,
