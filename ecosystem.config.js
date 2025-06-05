@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'betaoption-backend',
+      name: 'easyvest-backend',
       script: './backend/server.js',
       instances: 1,
       autorestart: true,
@@ -10,19 +10,19 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: 5003,
-        MONGODB_URI: 'mongodb+srv://taha:taha12345@cluster0.8jqgx.mongodb.net/betaoption?retryWrites=true&w=majority',
-        JWT_SECRET: 'your-secret-key',
+        MONGODB_URI: 'mongodb+srv://taharjtdeveloper:XQIC5sCzpzQW91UQ@betaoption.xwpxpkd.mongodb.net/?retryWrites=true&w=majority&appName=betaoption',
+        SESSION_SECRET: 'your-secure-session-secret-key-change-this',
         CLIENT_URL: 'https://easyvest.ir',
-        GOOGLE_CLIENT_ID: '1094757684567-8jqgx.mongodb.net',
-        GOOGLE_CLIENT_SECRET: 'GOCSPX-8jqgx.mongodb.net',
+        GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+        GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
         GOOGLE_CALLBACK_URL: 'https://easyvest.ir/auth/google/callback'
       }
     },
     {
-      name: 'betaoption-frontend',
-      script: 'http-server',
+      name: 'easyvest-frontend',
+      script: 'serve',
       cwd: './frontend/build',
-      args: '-p 5001',
+      args: '-s build -l 5001',
       instances: 1,
       autorestart: true,
       watch: false,
