@@ -12,7 +12,11 @@ module.exports = {
         GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
         GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
         GOOGLE_CALLBACK_URL: 'https://easyvest.ir/auth/google/callback'
-      }
+      },
+      instances: 1,
+      exec_mode: 'cluster',
+      watch: false,
+      max_memory_restart: '1G'
     }
   ]
 }; 
