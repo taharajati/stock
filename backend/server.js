@@ -5,6 +5,7 @@ const passport = require('passport');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+const path = require('path');
 require('dotenv').config();
 
 // Import routes
@@ -18,26 +19,16 @@ const app = express();
 const PORT = process.env.PORT || 5003;
 
 // MongoDB Connection
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://taharjtdeveloper:XQIC5sCzpzQW91UQ@betaoption.xwpxpkd.mongodb.net/?retryWrites=true&w=majority&appName=betaoption', {
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-      family: 4
-    });
-    console.log('Connected to MongoDB Atlas');
-    return true;
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-    return false;
-  }
-};
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB Atlas'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Determine if we're in production
 const isProduction = process.env.NODE_ENV === 'production';
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // CORS configuration
@@ -60,24 +51,23 @@ app.use(cors({
 }));
 
 // Session configuration with MongoDB store
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
+const sessionConfig = {
+  secret: process.env.SESSION_SECRET || 'your-secure-session-secret-key-change-this',
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI || 'mongodb+srv://taharjtdeveloper:XQIC5sCzpzQW91UQ@betaoption.xwpxpkd.mongodb.net/?retryWrites=true&w=majority&appName=betaoption',
-    ttl: 24 * 60 * 60, // 1 day
+    mongoUrl: process.env.MONGODB_URI,
+    ttl: 14 * 24 * 60 * 60, // = 14 days
     autoRemove: 'native',
-    touchAfter: 24 * 3600 // 24 hours
+    touchAfter: 24 * 3600 // = 24 hours
   }),
   cookie: {
-    secure: isProduction,
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    sameSite: isProduction ? 'none' : 'lax',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  },
-  proxy: isProduction
-}));
+    maxAge: 14 * 24 * 60 * 60 * 1000, // = 14 days
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+  }
+};
 
 // Debug middleware
 app.use((req, res, next) => {
@@ -134,17 +124,19 @@ app.get('/', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error('Server error:', err);
-  res.status(500).json({
-    error: 'Internal server error',
-    message: isProduction ? 'An error occurred' : err.message
+  console.error('Error:', err);
+  res.status(err.status || 500).json({
+    error: {
+      message: err.message || 'Internal Server Error',
+      status: err.status || 500
+    }
   });
 });
 
 // Start server with retry logic
 const startServer = async (retries = 3) => {
   try {
-    const isConnected = await connectDB();
+    const isConnected = await mongoose.connection.readyState;
     if (!isConnected) {
       throw new Error('Failed to connect to MongoDB');
     }
