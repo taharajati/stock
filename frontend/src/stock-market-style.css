@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@font-face {
+    font-family: 'Vazir';
+    src: url('./fonts/Vazir-Medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lalezar';
+    src: url('./fonts/Lalezar-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Iranian Sans';
+    src: url('./fonts/Iranian Sans.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Digi Mitra Circle Bold';
+    src: url('./fonts/Digi Mitra Circle Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Digi Mitra Rectangle Bold';
+    src: url('./fonts/Digi Mitra Rectangle Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+:root {
+    --color-bg: #F1F1F1;
+    --color-primary: #394258;
+    --color-text: #D5B263;
+    --color-primary-variant: #CB1950;
+    --color-primary-variant2: #b01747;
+    --color-primary-variant-02: #F6EBEB;
+    --color-light: #F1F9FA;
+    --color-bg-variant: #293040;
+    --color-bg-01 : #E3E3E3 ;
+
+    --color-white: #223a43  ;
+
+    --transition: all 400ms ease ;
+
+    --container-width-lg: 75%;
+    --container-width-md: 86%;
+    --container-width-sm: 90%;
+}
+
+
+*{
+
+    font-family:'Vazir-Medium';
+    font-size: medium;
+
+}
+
+
+body{
+    font-family: 'Vazir-Medium';
+    font-size: medium;
+}
