@@ -161,11 +161,7 @@ const Blog = () => {
                 <button
                   key={sortOption}
                   onClick={() => handleSortChange(sortOption)}
-                  className={`px-5 py-2 rounded-lg transition duration-200 ${
-                    sortBy === sortOption
-                      ? 'bg-[color:var(--color-bg-variant)] text-white'
-                      : 'bg-slate-500 hover:bg-[color:var(--color-bg-variant)] text-white'
-                  }`}
+                  className={`px-5 py-2 rounded-lg transition duration-200 font-bold border ${sortBy === sortOption ? 'bg-gold text-navy border-gold' : 'bg-navy text-gold border-navy hover:bg-gold hover:text-navy hover:border-gold'}`}
                 >
                   {sortOption === 'publish_date_dec' && 'آخرین مطلب'}
                   {sortOption === 'publish_date_asc' && 'قدیمی ترین'}

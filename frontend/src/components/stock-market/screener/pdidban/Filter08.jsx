@@ -230,12 +230,12 @@ const handleEditWatchpointName = (editName) => {
           </button>
         </div>
         <div className="flex items-center space-x-4">
-          <button onClick={openEditPopup} className="flex items-center space-x-1 text-sm text-gray-600">
-          <span><FaEdit className='text-[color:var(--color-primary)] scale-125' />
+          <button onClick={openEditPopup} className="flex items-center space-x-1 text-sm text-gold">
+          <span><FaEdit className='text-gold scale-125' />
           </span>
           </button>
-          <button onClick={openAddPopup} className="flex items-center space-x-1 text-sm text-gray-600">
-            <span><IoIosAddCircle className='text-[color:var(--color-primary)] scale-125' />
+          <button onClick={openAddPopup} className="flex items-center space-x-1 text-sm text-gold">
+            <span><IoIosAddCircle className='text-gold scale-125' />
             </span>
           </button>
         </div>
@@ -327,8 +327,7 @@ const handleEditWatchpointName = (editName) => {
       <button
 
 onClick={() => handleEditWatchpointName(selectedWatchpoint, editName)} 
-       className="mt-2 px-4 py-2 bg-[color:var(--color-primary)] hover:bg-[color:var(--color-bg-variant)] text-white rounded"
-      >
+       className="mt-2 px-4 py-2 bg-gold hover:bg-navy hover:text-gold text-navy rounded font-bold border border-gold transition">
         ذخیره نام
       </button>
 

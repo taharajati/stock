@@ -4,8 +4,7 @@
         import axios from 'axios';
         import { IoIosAddCircle } from "react-icons/io";
         import { IoMdClose } from "react-icons/io"; // Icon for delete button
-
-
+        import { TableSkeleton } from '../../../common/SkeletonLoader';
 
         import DataFilter from './DataFilter';
         import MyChart from '../../charts/MyChart';
@@ -460,7 +459,7 @@
             <button
                 key={groupKey}
                 type="button"
-                className={`px-4 py-2  hover:text-[color:var(--color-bg-variant)]  hover:border-[color:var(--color-text)] ${selectedGroup === groupKey ? 'bg-white text-[color:var(--color-bg-variant)] border-b-4 border-[color:var(--color-text)]' : 'bg-white text-gray-400 border-b-4 border-gray-300'}`}
+                className={`px-4 py-2 rounded-lg font-bold border transition duration-300 ${selectedGroup === groupKey ? 'bg-gold text-navy border-gold scale-105' : 'bg-navy text-gold border-navy hover:bg-gold hover:text-navy hover:border-gold'}`}
                 onClick={() => handleGroupSelect(groupKey)}
             >
                 {data.groups[groupKey] || 'Unknown Group'}
@@ -480,10 +479,14 @@
     
                 </div>
 
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto bg-navy shadow-lg rounded-lg border border-gold">
                     <div className="table-container overflow-x-auto" onMouseLeave={() => setHoveredRowIndex(null)}>
 
-                        {showChart ? (
+                        {loading ? (
+                            <div className="p-8">
+                                <TableSkeleton rows={8} columns={6} />
+                            </div>
+                        ) : showChart ? (
                     <MyChart data={chartData} /> // Render the chart component
                 ) : (
                 <table className="min-w-full table-fixed border-collapse border border-gray-300">
@@ -512,9 +515,9 @@
 
 
             {/* Render other columns if no icons are displayed */}
-            <td className="py-2 gap-4  px-4 flex items-center space-x-2 mx-3" colSpan="4">
+            <td className="py-2 gap-4  px-4 flex items-center space-x-2 mx-3 border-b border-gold text-gold" colSpan="4">
                     <span
-                    className="cursor-pointer text-4xl"
+                    className="cursor-pointer text-4xl text-gold hover:text-navy"
                     onClick={() => setDetailVisible(true)}
                     >
                         <CgDetailsMore
@@ -522,7 +525,7 @@
                                                         e.stopPropagation();
                                                         handleRowClick(item.instrument_id);
                                                     }}
-                                                    className="w-5 h-5 text-red-500 hover:text-red-700 cursor-pointer"
+                                                    className="w-5 h-5 text-gold hover:text-navy cursor-pointer"
                                                 />
 
                     </span>
@@ -534,7 +537,7 @@
             {screenerData.length > 0 && (
                 <button
                     key={screenerData[0]._id.$oid} // Use the first screener as an example
-                    className="text-red-600 hover:text-red-800"
+                    className="text-gold hover:text-navy"
                     onClick={() => handleRemoveFromFilter(item.instrument_id, screenerData[0]._id.$oid)} // Pass instrument_id and first screener_id
                 >
                     <IoMdClose size={24} /> {/* Delete icon */}
@@ -547,11 +550,11 @@
             <button
                 type="button"
                 onClick={() => toggleDropdown(item._id.$oid)} // Toggle dropdown with the item's ID
-                className="inline-flex justify-center w-full rounded-md shadow-sm px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="inline-flex justify-center w-full rounded-md shadow-sm px-4 py-2 text-sm font-bold text-gold bg-navy border border-gold hover:bg-gold hover:text-navy focus:outline-none"
                 aria-haspopup="true"
                 aria-expanded={openDropdown[item._id.$oid] ? "true" : "false"}
             >
-                <IoIosAddCircle className="text-[color:var(--color-primary)] scale-125" />
+                <IoIosAddCircle className="text-gold scale-125" />
             </button>
 
             {openDropdown[item._id.$oid] && (

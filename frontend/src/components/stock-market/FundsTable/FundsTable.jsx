@@ -119,7 +119,7 @@ const FundsTable = () => {
             <button
               key={groupKey}
               onClick={() => switchGroup(groupKey)}
-              className={`px-4 py-2 hover:text-[color:var(--color-bg-variant)] hover:border-[color:var(--color-text)] ${selectedGroup === groupKey ? 'bg-white text-[color:var(--color-bg-variant)] border-b-4 border-[color:var(--color-text)]' : 'bg-white text-gray-400 border-b-4 border-gray-300'}`}
+              className={`px-4 py-2 rounded-lg font-bold border transition duration-300 ${selectedGroup === groupKey ? 'bg-gold text-navy border-gold scale-105' : 'bg-navy text-gold border-navy hover:bg-gold hover:text-navy hover:border-gold'}`}
             >
               {groups[groupKey]}
             </button>
@@ -127,7 +127,7 @@ const FundsTable = () => {
         </div>
 
         {/* DataGrid Table */}
-        <div style={{ height: 650, width: '100%' }}>
+        <div style={{ height: 650, width: '100%' }} className="bg-navy text-gold border border-gold rounded-lg p-2">
           <DataGrid
             rows={rows || []}
             columns={columns || []}
@@ -143,9 +143,13 @@ const FundsTable = () => {
             }}
             sx={{
               direction: 'rtl',
-              '& .MuiDataGrid-root': { direction: 'rtl' },
-              '& .MuiDataGrid-columnHeaders': { backgroundColor: '#f0f0f0', textAlign: 'center' },
-              '& .MuiDataGrid-cell': { textAlign: 'center', fontFamily: 'inherit', direction: 'ltr' },
+              '& .MuiDataGrid-root': { direction: 'rtl', backgroundColor: '#0A2342', color: '#FFD700', borderColor: '#FFD700' },
+              '& .MuiDataGrid-columnHeaders': { backgroundColor: '#061529', color: '#FFD700', textAlign: 'center', borderColor: '#FFD700' },
+              '& .MuiDataGrid-cell': { textAlign: 'center', fontFamily: 'inherit', direction: 'ltr', color: '#FFD700', borderColor: '#FFD700' },
+              '& .MuiDataGrid-row': { borderColor: '#FFD700' },
+              '& .MuiDataGrid-footerContainer': { backgroundColor: '#0A2342', color: '#FFD700', borderColor: '#FFD700' },
+              '& .MuiTablePagination-root': { color: '#FFD700' },
+              '& .MuiDataGrid-selectedRowCount': { color: '#FFD700' },
             }}
           />
         </div>

@@ -92,6 +92,18 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const register = async ({ firstName, lastName, email, password }) => {
+    try {
+      const response = await api.post('/auth/register', { firstName, lastName, email, password });
+      setUser(response.data.user);
+      setIsAuthenticated(true);
+      return response.data;
+    } catch (error) {
+      console.error('Registration failed:', error.response?.data || error.message);
+      throw error;
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -99,6 +111,7 @@ export function AuthProvider({ children }) {
     loginWithEmail,
     logout,
     isAuthenticated,
+    register,
   };
 
   return (

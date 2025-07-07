@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
-import { Bar } from "react-chartjs-2";
+import React, { useEffect, useState, useRef } from "react";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-
-import "chart.js/auto";
+import StockMarketEChart from '../charts/StockMarketEChart';
 
 const MainPage = () => {
   const [data, setData] = useState([]);
@@ -25,8 +22,10 @@ const MainPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [etfData, setETFData] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Loading state
-
-
+  // Ripple state for modal and edit button
+  const [rippleStyle, setRippleStyle] = useState(null);
+  const [modalRippleStyle, setModalRippleStyle] = useState(null);
+  const modalRef = useRef(null);
 
   // Fetch data from API
   useEffect(() => {
@@ -129,7 +128,7 @@ useEffect(() => {
     //    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-700"></div>
    //   </div>
    //   );
-  //  }
+   // }
 //  
     // Check if any of the fetched data is missing
     if (!data || !etfData || !differenceData) {
@@ -364,7 +363,7 @@ const prepareCharts = (data) => {
               },
             },
             grid: {
-              color: "#ffffff", // White grid lines for a cleaner design
+              color: "#ffffff", // White grid lines for cleaner design
             },
           },
         
@@ -793,6 +792,7 @@ const prepareCharts = (data) => {
           },
         },
       },
+      
 
 
 
@@ -1136,36 +1136,125 @@ const prepareCharts = (data) => {
       }));
     };
 
+  // Ripple handler for edit button
+  const handleRipple = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    setRippleStyle({ top: y, left: x, width: size, height: size });
+    setTimeout(() => setRippleStyle(null), 600);
+  };
+  // Ripple handler for modal close button
+  const handleModalRipple = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    setModalRippleStyle({ top: y, left: x, width: size, height: size });
+    setTimeout(() => setModalRippleStyle(null), 600);
+  };
 
+  // دسته‌بندی نمودارها
+  const chartCategories = [
+    {
+      title: 'بازار سهام',
+      keys: ['marketStatusChart', 'equityReturnsDiffChart'],
+    },
+    {
+      title: 'بازار اختیار معامله',
+      keys: ['callOptionYieldChart', 'putOptionYieldChart', 'option', 'openinterest', 'average', 'orderBookChart'],
+    },
+    {
+      title: 'صندوق‌های ETF',
+      keys: ['ETFNAVChart', 'lastprice'],
+    },
+  ];
 
+  // --- Demo charts for آزمایشی ---
+  const demoCharts = [
+    {
+      key: 'demoLine',
+      title: 'چارت خطی آزمایشی',
+      type: 'line',
+      categories: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور'],
+      data: [120, 132, 101, 134, 90, 230],
+    },
+    {
+      key: 'demoBar',
+      title: 'چارت میله‌ای آزمایشی',
+      type: 'bar',
+      categories: ['A', 'B', 'C', 'D', 'E'],
+      data: [23, 45, 12, 67, 34],
+    },
+    {
+      key: 'demoPie',
+      title: 'چارت دایره‌ای آزمایشی',
+      type: 'pie',
+      categories: [],
+      data: [
+        { value: 40, name: 'سهام' },
+        { value: 30, name: 'اوراق' },
+        { value: 20, name: 'کالا' },
+        { value: 10, name: 'سایر' },
+      ],
+    },
+  ];
     
   return (
-    <>
-    <div className="bg-[#dfe2eeed] min-h-screen p-6" dir="rtl">
-      {/* دکمه مدال */}
+    <div className="min-h-screen bg-white pt-16 pb-12 flex flex-col">
+      {/* Main content container */}
+      <main className="relative z-10 max-w-7xl mx-auto w-full px-2 sm:px-6 lg:px-8">
+        {/* دکمه ویرایش نمودارها */}
+        <div className="flex justify-end mb-8">
       <button
-        onClick={() => setShowModal(true)}
-        className="bg-[color:var(--color-primary)] text-white px-4 py-2 rounded-lg shadow-md mb-3 hover:bg-[color:var(--color-bg-variant)] transition-all"
+            onClick={e => { handleRipple(e); setShowModal(true); }}
+            className="bg-gold text-navy font-bold px-6 py-2 rounded-full shadow border border-gold/40 hover:bg-gold-dark hover:text-white transition-all text-lg relative overflow-hidden"
       >
+            {rippleStyle && (
+              <span
+                className="ripple"
+                style={{
+                  top: rippleStyle.top,
+                  left: rippleStyle.left,
+                  width: rippleStyle.width,
+                  height: rippleStyle.height,
+                }}
+              />
+            )}
         ویرایش نمودارها
       </button>
-
-   {/* مدال انتخاب نمودار */}
+        </div>
 {/* مدال انتخاب نمودار */}
 {showModal && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-all">
-    <div className="bg-white p-8 rounded-xl shadow-lg w-[95%] max-w-md transform transition-transform duration-300 ease-out scale-95 hover:scale-100">
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-semibold text-gray-800 tracking-wide">انتخاب نمودار</h3>
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 fade-in">
+            <div ref={modalRef} className="relative bg-white border border-gold/10 rounded-2xl shadow-2xl w-full max-w-[380px] px-6 py-8 sm:px-3 sm:py-5 modal-animate scale-in max-h-[90vh] overflow-y-auto">
+              {/* Close button top left */}
         <button
-          onClick={() => setShowModal(false)}
-          className="text-gray-500 hover:text-gray-700 text-3xl transition-transform duration-200 transform hover:scale-110"
-        >
-          &times;
+                onClick={(e) => { handleModalRipple(e); setShowModal(false); }}
+                className="absolute top-4 left-4 w-10 h-10 text-2xl text-gold hover:scale-110 hover:bg-gold/10 rounded-full flex items-center justify-center transition-all z-20 shadow"
+                title="بستن"
+              >
+                {modalRippleStyle && (
+                  <span
+                    className="ripple"
+                    style={{
+                      top: modalRippleStyle.top,
+                      left: modalRippleStyle.left,
+                      width: modalRippleStyle.width,
+                      height: modalRippleStyle.height,
+                    }}
+                  />
+                )}
+                ×
         </button>
-      </div>
-
-      <div className="space-y-6">
+              {/* Title */}
+              <h3 className="text-2xl font-extrabold text-navy text-center mb-1">انتخاب نمودار</h3>
+              <div className="w-14 h-1 bg-gold rounded-full mx-auto mb-3"></div>
+              {/* Subtitle */}
+              <div className="text-base text-gray-500 text-center mb-6">نمودارهای مورد نظر را انتخاب کنید</div>
+              {/* Checkbox list */}
+              <div className="space-y-3 max-h-[55vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gold/60 scrollbar-track-transparent pr-1">
         {Object.keys(visibleCharts).map((chartKey) => {
           const persianNames = {
             marketStatusChart: 'نمودار وضعیت بازار',
@@ -1173,82 +1262,288 @@ const prepareCharts = (data) => {
             putOptionYieldChart: 'نمودار بازدهی گزینه فروش',
             orderBookChart: 'نمودار دفتر سفارشات',
             equityReturnsDiffChart: 'تفاوت بازدهی سهام',
-            ETFNAVChart: 'درصد حباب NAV صندوق‌های ETF',
+                    ETFNAVChart: 'حباب NAV ETF',
             average: 'نوسان پذیری ضمنی',
             lastprice: 'موقعیت‌های باز',
             openinterest: 'بازدهی call و put',
             option: 'ارزش معاملات',
           };
-
           return (
-            <label key={chartKey} className="flex items-center gap-3 text-gray-800 text-lg cursor-pointer transition-colors duration-200 hover:text-[color:var(--color-primary)]">
+                    <label key={chartKey} className="flex items-center gap-4 bg-gold/5 hover:bg-gold/10 border border-gold/10 rounded-xl px-4 py-3 font-bold text-navy cursor-pointer transition-all shadow-sm relative overflow-hidden">
               <input
                 type="checkbox"
                 checked={visibleCharts[chartKey]}
                 onChange={() => handleCheckboxChange(chartKey)}
-                className="form-checkbox text-[color:var(--color-primary)] transition-all duration-200 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary)]"
+                        className="form-checkbox w-6 h-6 text-gold focus:ring-gold border-gold rounded transition-all duration-200"
               />
-              <span>{persianNames[chartKey]}</span>
+                      <span className="select-none">{persianNames[chartKey]}</span>
             </label>
           );
         })}
       </div>
+              {/* Confirm button */}
+              <button
+                onClick={() => setShowModal(false)}
+                className="mt-8 w-full bg-gold text-navy font-bold text-base py-2.5 rounded-xl shadow hover:bg-gold-dark hover:text-white transition-all"
+              >
+                تایید
+              </button>
     </div>
   </div>
 )}
-
-
-        {/* Chart Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Reusable Chart Component */}
-          {['marketStatusChart', 'equityReturnsDiffChart', 'openinterest', 'callOptionYieldChart', 'orderBookChart', 'average', 'option', 'ETFNAVChart', 'lastprice'].map((chartKey) => 
-            visibleCharts[chartKey] && (
+        {/* Chart Grid با دسته‌بندی و divider */}
+        <div className="space-y-16">
+          {chartCategories.map((cat, idx) => {
+            const visibleCatCharts = cat.keys.filter((key) => visibleCharts[key]);
+            if (visibleCatCharts.length === 0) return null;
+            return (
+              <div key={cat.title}>
+                <div className="flex items-center mb-8">
+                  <div className="flex-1 h-px bg-gold/30 rounded-full"></div>
+                  <span className="mx-4 text-2xl md:text-3xl font-extrabold text-navy drop-shadow-sm whitespace-nowrap">{cat.title}</span>
+                  <div className="flex-1 h-px bg-gold/30 rounded-full"></div>
+                </div>
+                <TransitionGroup component={null}>
+                  <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-10">
+                    {visibleCatCharts.map((chartKey) => (
+                      <CSSTransition key={chartKey} timeout={500} classNames={{
+                        enter: 'fade-in slide-in-up',
+                        enterActive: '',
+                        exit: 'fade-in',
+                        exitActive: 'opacity-0 scale-95 duration-500',
+                      }}>
               <ChartCard 
-                key={chartKey}
                 chartKey={chartKey}
                 chartData={charts[chartKey]}
-                handleCheckboxChange={handleCheckboxChange}  // ارسال تابع به عنوان prop
-
+                          handleCheckboxChange={handleCheckboxChange}
               />
-            )
-          )}
+                      </CSSTransition>
+                    ))}
         </div>
+                </TransitionGroup>
       </div>
-    </>
-  );
-};
-
-
-
-
-// UI Component Updates
-const ChartCard = ({ chartKey, chartData, handleCheckboxChange }) => {
-  return (
-    <div className=" bg-[#f4f7f9] shadow-sm rounded-xl p-6 hover:shadow-md transition duration-300 relative">
-      {/* دکمه ضربدر برای حذف نمودار */}
-      <button
-        onClick={() => handleCheckboxChange(chartKey)}  // حالا اینجا تابع کار می‌کند
-        className="absolute top-4 left-4 text-[color:var(--color-primary)]  text-sm px-3 py-1 rounded-full transition transform hover:scale-105"
-        title="حذف نمودار"
-      >
-        ✖
-      </button>
-      
-      {/* دکمه اضافی */}
-      <button className="absolute top-4 right-4 bg-[color:var(--color-primary)] hover:bg-[color:var(--color-bg-variant)] text-white text-sm px-3 py-1 rounded-full shadow-md transition transform hover:scale-105">
-        !
-      </button>
-
-      {/* رسم نمودار */}
-      <div className="mt-6">
-        {chartData.options.type === 'bar' ? (
-          <Bar data={chartData.data} options={chartData.options} />
-        ) : (
-          <Line data={chartData.data} options={chartData.options} />
-        )}
-      </div>
+            );
+          })}
+          {/* آزمایشی: ردیف چارت‌های تست */}
+          <div>
+            <div className="flex items-center mb-8">
+              <div className="flex-1 h-px bg-gold/30 rounded-full"></div>
+              <span className="mx-4 text-2xl md:text-3xl font-extrabold text-navy drop-shadow-sm whitespace-nowrap">آزمایشی</span>
+              <div className="flex-1 h-px bg-gold/30 rounded-full"></div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-10">
+              {demoCharts.map((demo) => (
+                <div key={demo.key} className="bg-white border border-gold/10 rounded-2xl shadow-lg px-8 py-10 min-h-[340px] flex flex-col hover:scale-[1.02] hover:shadow-[0_8px_32px_rgba(212,180,64,0.13)] transition-all duration-300 group relative fade-in slide-in-up">
+                  <div className="text-center">
+                    <span className="text-2xl md:text-3xl font-extrabold text-navy">{demo.title}</span>
+                    <div className="w-12 h-1 bg-gold rounded-full mx-auto mt-2 mb-4"></div>
+                  </div>
+                  <div className="mt-2 flex-1">
+                    <StockMarketEChart
+                      type={demo.type}
+                      data={demo.type === 'pie' ? demo.data : [{ name: demo.title, type: demo.type, data: demo.data }]}
+                      categories={demo.categories}
+                      title={demo.title}
+                      height={320}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
 
+// ChartCard component:
+const ChartCard = ({ chartKey, chartData, handleCheckboxChange }) => {
+  // Ripple state for close button
+  const [closeRipple, setCloseRipple] = useState(null);
+  const handleCloseRipple = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    setCloseRipple({ top: y, left: x, width: size, height: size });
+    setTimeout(() => setCloseRipple(null), 600);
+  };
+  // نام فارسی نمودارها
+  const persianNames = {
+    marketStatusChart: 'وضعیت بازار سهام',
+    callOptionYieldChart: 'بازدهی اختیار خرید',
+    putOptionYieldChart: 'بازدهی اختیار فروش',
+    orderBookChart: 'دفتر سفارشات',
+    equityReturnsDiffChart: 'تفاوت بازدهی سهام',
+    ETFNAVChart: 'حباب NAV ETF',
+    average: 'نوسان پذیری ضمنی',
+    lastprice: 'موقعیت‌های باز',
+    openinterest: 'بازدهی call و put',
+    option: 'ارزش معاملات',
+  };
+  // Helper: summary info (latest value, percent change)
+  function getSummary(chartKey, chartData) {
+    if (!chartData || !chartData.data) return null;
+    if (chartKey === 'marketStatusChart') {
+      const last = chartData.data.datasets?.[0]?.data?.slice(-1)[0];
+      const prev = chartData.data.datasets?.[0]?.data?.slice(-2)[0];
+      if (last == null) return null;
+      let diff = prev != null ? last - prev : 0;
+      let percent = prev ? ((diff / prev) * 100).toFixed(2) : 0;
+      let color = diff > 0 ? 'bg-green-100 text-green-700 border-green-300' : diff < 0 ? 'bg-red-100 text-red-700 border-red-300' : 'bg-gray-100 text-gray-700 border-gray-300';
+      let arrow = diff > 0 ? '▲' : diff < 0 ? '▼' : '';
+  return (
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-xs font-mono font-bold ${color} mt-2 mb-4 mx-auto`} style={{display:'block',width:'fit-content'}}>
+          {arrow} {last}
+          <span className="ltr:ml-1 rtl:mr-1">({percent}%)</span>
+        </span>
+      );
+    }
+    if (chartKey === 'ETFNAVChart') {
+      const last = chartData.data.datasets?.[0]?.data?.slice(-1)[0];
+      if (last == null) return null;
+      let color = last > 0 ? 'bg-green-100 text-green-700 border-green-300' : last < 0 ? 'bg-red-100 text-red-700 border-red-300' : 'bg-gray-100 text-gray-700 border-gray-300';
+      let arrow = last > 0 ? '▲' : last < 0 ? '▼' : '';
+      return (
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-xs font-mono font-bold ${color} mt-2 mb-4 mx-auto`} style={{display:'block',width:'fit-content'}}>
+          {arrow} {last}%
+        </span>
+      );
+    }
+    return null;
+  }
+  // اگر chartData یا chartData.options وجود نداشت، کارت را رندر نکن
+  if (!chartData || !chartData.options) {
+    return (
+      <div className="bg-white border border-gold/10 rounded-2xl shadow-lg px-8 py-10 flex flex-col items-center justify-center min-h-[220px]">
+        <span className="text-gray-400 font-bold text-base text-center">داده‌ای برای نمایش وجود ندارد</span>
+      </div>
+    );
+  }
+  // جدول حرفه‌ای برای marketStatusChart و ETFNAVChart
+  let table = null;
+  if (chartKey === 'marketStatusChart' && chartData.data && chartData.data.labels && chartData.data.labels.length > 0) {
+    table = (
+      <div className="mb-4 overflow-x-auto">
+        <table className="min-w-full rounded-xl overflow-hidden text-sm">
+          <thead className="bg-white text-navy border-b-2 border-gold/20">
+            <tr>
+              <th className="px-3 py-2 font-bold">زمان</th>
+              <th className="px-3 py-2 font-bold">آخرین قیمت</th>
+              <th className="px-3 py-2 font-bold">قیمت پایانی</th>
+            </tr>
+          </thead>
+          <tbody>
+            {chartData.data.labels.map((label, idx) => {
+              const last = chartData.data.datasets[0]?.data[idx];
+              const prev = chartData.data.datasets[0]?.data[idx - 1];
+              const diff = prev != null ? last - prev : 0;
+              const color = diff > 0 ? 'text-green-600' : diff < 0 ? 'text-red-600' : 'text-gray-700';
+              const arrow = diff > 0 ? '▲' : diff < 0 ? '▼' : '';
+              return (
+                <tr key={idx} className={idx === 0 ? 'bg-gold/10 font-bold' : idx % 2 === 0 ? 'bg-white' : 'bg-gold/5 hover:bg-gold/10'}>
+                  <td className="px-3 py-2 font-mono">{label}</td>
+                  <td className={`px-3 py-2 font-mono font-bold ${color}`}>{arrow} {last}</td>
+                  <td className="px-3 py-2 font-mono font-bold text-navy">{chartData.data.datasets[1]?.data[idx]}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+  if (chartKey === 'ETFNAVChart' && chartData.data && chartData.data.labels && chartData.data.labels.length > 0) {
+    table = (
+      <div className="mb-4 overflow-x-auto">
+        <table className="min-w-full rounded-xl overflow-hidden text-sm">
+          <thead className="bg-white text-navy border-b-2 border-gold/20">
+            <tr>
+              <th className="px-3 py-2 font-bold">نماد</th>
+              <th className="px-3 py-2 font-bold">درصد حباب</th>
+            </tr>
+          </thead>
+          <tbody>
+            {chartData.data.labels.map((label, idx) => {
+              const value = chartData.data.datasets[0]?.data[idx];
+              const color = value > 0 ? 'text-green-600' : value < 0 ? 'text-red-600' : 'text-gray-700';
+              const arrow = value > 0 ? '▲' : value < 0 ? '▼' : '';
+              return (
+                <tr key={idx} className={idx === 0 ? 'bg-gold/10 font-bold' : idx % 2 === 0 ? 'bg-white' : 'bg-gold/5 hover:bg-gold/10'}>
+                  <td className="px-3 py-2 font-mono">{label}</td>
+                  <td className={`px-3 py-2 font-mono font-bold ${color}`}>{arrow} {value}%</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+  // Log chartData for debugging
+  console.log('chartData', chartData);
+
+  // Sanitize datasets and labels
+  const safeDatasets = (chartData.data.datasets || []).map(ds => ({
+    name: typeof ds.label === 'string' ? ds.label : '',
+    type: chartData.options.type === 'bar' ? 'bar' : 'line',
+    data: Array.isArray(ds.data) ? ds.data.map(d => (typeof d === 'number' ? d : (typeof d === 'string' ? Number(d) : null))) : [],
+  }));
+
+  const safeLabels = Array.isArray(chartData.data.labels)
+    ? chartData.data.labels.map(l => (typeof l === 'string' ? l : (typeof l === 'number' ? String(l) : '')))
+    : [];
+
+  // If no data, show a friendly message instead of the chart
+  if (!safeDatasets.length || !safeLabels.length) {
+  return (
+      <div className="bg-white border border-gold/10 rounded-2xl shadow-lg px-8 py-10 flex flex-col items-center justify-center min-h-[220px]">
+        <span className="text-gray-400 font-bold text-base text-center">داده‌ای برای نمایش وجود ندارد</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white border border-gold/10 rounded-2xl shadow-lg px-8 py-10 min-h-[340px] flex flex-col hover:scale-[1.02] hover:shadow-[0_8px_32px_rgba(212,180,64,0.13)] transition-all duration-300 group relative fade-in slide-in-up">
+      {/* Close button top right */}
+      <button
+        onClick={(e) => { handleCloseRipple(e); handleCheckboxChange(chartKey); }}
+        className="absolute top-4 right-4 text-navy hover:bg-gold/10 rounded-full w-8 h-8 flex items-center justify-center transition-all text-lg relative overflow-hidden z-10"
+        title="حذف نمودار"
+      >
+        {closeRipple && (
+          <span
+            className="ripple"
+            style={{
+              top: closeRipple.top,
+              left: closeRipple.left,
+              width: closeRipple.width,
+              height: closeRipple.height,
+            }}
+          />
+        )}
+        ×
+      </button>
+      {/* Card title centered with gold underline accent */}
+      <div className="text-center">
+        <span className="text-2xl md:text-3xl font-extrabold text-navy">
+          {persianNames[chartKey]}
+        </span>
+        <div className="w-12 h-1 bg-gold rounded-full mx-auto mt-2 mb-4"></div>
+        {getSummary(chartKey, chartData)}
+      </div>
+      {table}
+      <div className="mt-2 flex-1">
+        <StockMarketEChart
+          type={chartData.options.type === 'bar' ? 'bar' : 'line'}
+          data={safeDatasets}
+          categories={safeLabels}
+          title={chartData.options.plugins?.title?.text || ''}
+          height={320}
+        />
+      </div>
+    </div>
+  );
+};
 export default MainPage;

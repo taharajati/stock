@@ -40,6 +40,7 @@ function StockMarketApp() {
               <Route path="Blog" element={<Blog />} />
               <Route path="post/:uniqueId" element={<PostDetail />} />
               <Route path="group/:groupId" element={<GroupPostDetail />} />
+              <Route path="operational_strategies" element={<StrategiesTable />} />
               <Route path="" element={<Navigate to="MainPage" />} />
             </Routes>
           </div>

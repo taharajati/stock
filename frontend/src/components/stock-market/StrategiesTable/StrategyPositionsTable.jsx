@@ -111,14 +111,14 @@ const StrategyPositionsTable = () => {
       {/* Back Button */}
       <button
         onClick={handleGoBack}
-        className="bg-[color:var(--color-primary-variant-02)] py-1 px-3 rounded-lg mb-4"
+        className="bg-gold text-navy py-1 px-3 rounded-lg mb-4 border border-gold font-bold hover:bg-navy hover:text-gold transition"
       >
         بازگشت به لیست استراتژی ها
       </button>
 
       {/* Explanation */}
       {explanation && (
-        <div className="mb-4 p-4 bg-gray-100 border border-gray-300 rounded-lg">
+        <div className="mb-4 p-4 bg-navy border border-gold rounded-lg text-gold">
           <p>{explanation}</p>
         </div>
       )}

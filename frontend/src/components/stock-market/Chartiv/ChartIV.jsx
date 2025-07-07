@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Line, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js'; // Import BarElement here
 import annotationPlugin from 'chartjs-plugin-annotation';
+import OptionSidebar from '../nav/OptionSidebar';
 
 // Register Chart.js components and annotation plugin
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, annotationPlugin); // Register BarElement here
@@ -192,11 +193,32 @@ const getClosestStrikePrices= (strikePrices, ua_final) => {
   const filteredCharts = getChartData();
 
  
-  if (error) return  <div className="fixed inset-0 flex items-center justify-center z-50">
-  <div className="bg-white rounded-lg p-5 max-w-md w-full mx-auto shadow-lg border-e-red-50">
-    <p className="text-2xl font-semibold mb-4 text-center text-[color:var(--color-primary-variant)]">{error}</p>
-  </div></div>;
-  if (!data) return <div>No data available to display.</div>;
+  if (error) return (
+    <div className="flex">
+      <OptionSidebar />
+      <div className="flex-1 flex items-center justify-center">
+        <div className="bg-white rounded-lg p-5 max-w-md w-full mx-auto shadow-lg border-e-red-50">
+          <p className="text-2xl font-semibold mb-4 text-center text-[color:var(--color-primary-variant)]">{error}</p>
+        </div>
+      </div>
+    </div>
+  );
+  if (!data) return (
+    <div className="flex">
+      <OptionSidebar />
+      <div className="flex-1 flex items-center justify-center">
+        <div>No data available to display.</div>
+      </div>
+    </div>
+  );
+  if (loading) return (
+    <div className="flex">
+      <OptionSidebar />
+      <div className="flex-1 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-700"></div>
+      </div>
+    </div>
+  );
 
   // List of field types for buttons
   const fieldTypes = Object.keys(chartOptions).map(key => ({
@@ -206,186 +228,192 @@ const getClosestStrikePrices= (strikePrices, ua_final) => {
 
   console.log("filteredCharts",filteredCharts)
   return (
-    <div className="chart-container">
-      <h3 className='mb-6 mr-6 text-right text-[30px] text-[color:var(--color-primary-variant)]'>اطلاعات نمودار</h3>
+    <div className="flex">
+      <OptionSidebar />
+      <div className="flex-1">
+        <div className="chart-container">
+          <h3 className='mb-6 mr-6 text-right text-[30px] text-[color:var(--color-primary-variant)]'>اطلاعات نمودار</h3>
 
-   {/* ua_instrument_symbol_fa Filter */}
-   <div className="filter-container text-right my-3 mr-6">
-        <label htmlFor="uaInstrumentSymbolFaFilter" className="my-1 text-right float-right ms-3">نماد پایه</label>
-        <span className=" my-1 text-right  float-right ms-3 mr-[60px]">  :</span>
+         {/* ua_instrument_symbol_fa Filter */}
+         <div className="filter-container text-right my-3 mr-6">
+              <label htmlFor="uaInstrumentSymbolFaFilter" className="my-1 text-right float-right ms-3">نماد پایه</label>
+              <span className=" my-1 text-right  float-right ms-3 mr-[60px]">  :</span>
 
-        <select
-          id="uaInstrumentSymbolFaFilter"
-          value={selectedUaInstrumentSymbolFa}
-          onChange={(e) => setSelectedUaInstrumentSymbolFa(e.target.value)}
-          className="filter-select text-center flex items-center justify-end mb-3 w-[200px] ml-auto m-1 text-black border"
-        >
-          <option value="">انتخاب همه</option>
-          {getUniqueValues('ua_instrument_symbol_fa').map((symbol, index) => (
-            <option key={index} value={symbol}>{symbol}</option>
-          ))}
-        </select>
-      </div>
-      {/* Due Date Filter */}
-      <div className="filter-container text-right my-3 mr-6">
-        <label htmlFor="dueDateFilter" className="my-1 text-right float-right ms-3">تاریخ سر رسید</label>
-        <span className=" my-1 text-right  float-right ms-3 mr-[21px]">  :</span>
-
-        <select
-          id="dueDateFilter"
-          value={selectedDueDate}
-          onChange={(e) => setSelectedDueDate(e.target.value)}
-          className="filter-select text-center flex items-center justify-end mb-3 w-[200px] ml-auto m-1 text-black border"
-        >
-          <option value="">انتخاب همه تاریخ‌ها</option>
-          {getUniqueValues('end_date_fa').map((date, index) => (
-            <option key={index} value={date}>{date}</option>
-          ))}
-        </select>
-      </div>
-
-      {/* Option Type Filter */}
-      <div className="filter-container text-right my-3 mr-6">
-        <label htmlFor="optionTypeFilter" className="my-1 text-right float-right ms-3">نوع اختیار</label>
-        <span className=" my-1 text-right  float-right ms-3 mr-[53px]">  :</span>
-
-        <select
-          id="optionTypeFilter"
-          value={selectedOptionType}
-          onChange={(e) => setSelectedOptionType(e.target.value)}
-          className="filter-select text-center flex items-center justify-end mb-3 w-[200px] ml-auto m-1 text-black border"
-        >
-          <option value="">تمام انواع اختیار</option>
-          {getUniqueValues('option_type').map((type, index) => (
-            <option key={index} value={type}>
-              {type === 'c' ? 'اختیار خرید' : 'اختیار فروش'}
-            </option>
-          ))}
-        </select>
-      </div>
-
-   
-
-      {/* Field Filter Buttons */}
-      <div className="filter-container text-right my-6 mr-6">
-        <label className=" text-[20px] ">انتخاب نوع نمودار</label>
-        <div className="space-x-4 my-6">
-          {fieldTypes.map(({ key, label }) => (
-            <button
-              key={key}
-              type="button"
-              className={`px-4 py-2  hover:text-[color:var(--color-bg-variant)]  hover:border-[color:var(--color-bg-variant)] ${selectedField === key ? 'bg-white text-[color:var(--color-bg-variant)] border-b-4 border-[color:var(--color-bg-variant)]' : 'bg-white text-gray-300 border-b-4 border-gray-300'}`}
-              onClick={() => setSelectedField(key)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-
-
-
-      {/* Render charts for the selected field */}
-      <div className="chart-group w-[1100px] text-right my-3  float-right mr-[60px]">
-        <h4 className="chart-box text-xl ">{fieldTypes.find(type => type.key === selectedField)?.label}</h4>
-        {filteredCharts.map((chart, chartIndex) => (
-          <div key={chartIndex} className="chart-box my-4 ">
-            <div className="chart-meta flex space-x-5 text-lg justify-center">
-              <p className='bg-[color:var(--color-bg)] text-black  rounded-lg px-4 py-2'>نماد: {chart.metaData.ua_instrument_symbol_fa}</p>
-              <p className='bg-[color:var(--color-bg)] text-black  rounded-lg px-4 py-2'>نوع اختیار: {chart.metaData.option_type_fa}</p>
-              <p className='bg-[color:var(--color-bg)] text-black  rounded-lg px-4 py-2'>تاریخ سررسید: {chart.metaData.end_date_fa}</p>
+              <select
+                id="uaInstrumentSymbolFaFilter"
+                value={selectedUaInstrumentSymbolFa}
+                onChange={(e) => setSelectedUaInstrumentSymbolFa(e.target.value)}
+                className="filter-select text-center flex items-center justify-end mb-3 w-[200px] ml-auto m-1 text-black border"
+              >
+                <option value="">انتخاب همه</option>
+                {getUniqueValues('ua_instrument_symbol_fa').map((symbol, index) => (
+                  <option key={index} value={symbol}>{symbol}</option>
+                ))}
+              </select>
             </div>
-            {chart.labels.length > 0 ? (
-        <Line
-        data={chart}
-        options={{
-          responsive: true,
-          plugins: {
-            title: {
-              display: true,
-              text: `${chartOptions[selectedField].title}`,
-              font: {
-                size: 20,
-                family: "Vazir-Medium",
-                weight: 'bold',
-              },
-            },
-            legend: {
-              position: 'top',
-              labels: {
-                font: {
-                  size: 17,
-                  family: "Vazir-Medium",
-                },
-              },
-            },
-            tooltip: {
-              callbacks: {
-                label: function(tooltipItem) {
-                  const chartIndex = tooltipItem.datasetIndex;
-                  const pointIndex = tooltipItem.dataIndex;
-                  const symbol = filteredCharts[chartIndex].metaData.symbol_fa[pointIndex];
-                  const value = tooltipItem.raw;
-                  console.log("tooltipItem",tooltipItem)
-                  console.log("chartIndex",chartIndex)
-                  console.log("pointIndex",pointIndex)
-                  console.log("filteredCharts",filteredCharts)
-                  return [`نماد: ${symbol}`, `مقدار: ${value}`];
-                },
-              },
-              titleFont: { size: 17 }, // Increase the title font size
-              bodyFont: { size: 19 },  // Increase the body font size
-            },
-            
-            annotation: {
-              annotations: chart.annotations, // Use the annotations here
-            },
-          },
-          scales: {
-            x: {
-              title: {
-                display: true,
-                text: chartOptions[selectedField]?.xaxis_title || 'X-Axis',
-                font: {
-                  size: 17,
-                  family: "Vazir-Medium",
-                },
-              },
-              ticks: {
-                font: {
-                  size: 14,
-                  family: "Vazir-Medium",
-                },
-              },
-            },
-            ...chartOptions[selectedField].yaxis.reduce((acc, yaxisConfig) => {
-              acc[`y-axis-${yaxisConfig.yaxis_id}`] = {
-                type: 'linear',
-                display: true,
-                position: yaxisConfig.position || 'left',
-                title: {
-                  display: true,
-                  text: yaxisConfig.name,
-                  font: {
-                    size: 14,
-                    family: "Vazir-Medium",
+            {/* Due Date Filter */}
+            <div className="filter-container text-right my-3 mr-6">
+              <label htmlFor="dueDateFilter" className="my-1 text-right float-right ms-3">تاریخ سر رسید</label>
+              <span className=" my-1 text-right  float-right ms-3 mr-[21px]">  :</span>
+
+              <select
+                id="dueDateFilter"
+                value={selectedDueDate}
+                onChange={(e) => setSelectedDueDate(e.target.value)}
+                className="filter-select text-center flex items-center justify-end mb-3 w-[200px] ml-auto m-1 text-black border"
+              >
+                <option value="">انتخاب همه تاریخ‌ها</option>
+                {getUniqueValues('end_date_fa').map((date, index) => (
+                  <option key={index} value={date}>{date}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Option Type Filter */}
+            <div className="filter-container text-right my-3 mr-6">
+              <label htmlFor="optionTypeFilter" className="my-1 text-right float-right ms-3">نوع اختیار</label>
+              <span className=" my-1 text-right  float-right ms-3 mr-[53px]">  :</span>
+
+              <select
+                id="optionTypeFilter"
+                value={selectedOptionType}
+                onChange={(e) => setSelectedOptionType(e.target.value)}
+                className="filter-select text-center flex items-center justify-end mb-3 w-[200px] ml-auto m-1 text-black border"
+              >
+                <option value="">تمام انواع اختیار</option>
+                {getUniqueValues('option_type').map((type, index) => (
+                  <option key={index} value={type}>
+                    {type === 'c' ? 'اختیار خرید' : 'اختیار فروش'}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+         
+
+            {/* Field Filter Buttons */}
+            <div className="filter-container text-right my-6 mr-6">
+              <label className=" text-[20px] ">انتخاب نوع نمودار</label>
+              <div className="space-x-4 my-6">
+                {fieldTypes.map(({ key, label }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    className={`px-4 py-2  hover:text-[color:var(--color-bg-variant)]  hover:border-[color:var(--color-bg-variant)] ${selectedField === key ? 'bg-white text-[color:var(--color-bg-variant)] border-b-4 border-[color:var(--color-bg-variant)]' : 'bg-white text-gray-300 border-b-4 border-gray-300'}`}
+                    onClick={() => setSelectedField(key)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+
+
+
+            {/* Render charts for the selected field */}
+            <div className="chart-group w-[1100px] text-right my-3  float-right mr-[60px]">
+              <h4 className="chart-box text-xl ">{fieldTypes.find(type => type.key === selectedField)?.label}</h4>
+              {filteredCharts.map((chart, chartIndex) => (
+                <div key={chartIndex} className="chart-box my-4 ">
+                  <div className="chart-meta flex space-x-5 text-lg justify-center">
+                    <p className='bg-[color:var(--color-bg)] text-black  rounded-lg px-4 py-2'>نماد: {chart.metaData.ua_instrument_symbol_fa}</p>
+                    <p className='bg-[color:var(--color-bg)] text-black  rounded-lg px-4 py-2'>نوع اختیار: {chart.metaData.option_type_fa}</p>
+                    <p className='bg-[color:var(--color-bg)] text-black  rounded-lg px-4 py-2'>تاریخ سررسید: {chart.metaData.end_date_fa}</p>
+                  </div>
+                  {chart.labels.length > 0 ? (
+              <Line
+              data={chart}
+              options={{
+                responsive: true,
+                plugins: {
+                  title: {
+                    display: true,
+                    text: `${chartOptions[selectedField].title}`,
+                    font: {
+                      size: 20,
+                      family: "Vazir-Medium",
+                      weight: 'bold',
+                    },
+                  },
+                  legend: {
+                    position: 'top',
+                    labels: {
+                      font: {
+                        size: 17,
+                        family: "Vazir-Medium",
+                      },
+                    },
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: function(tooltipItem) {
+                        const chartIndex = tooltipItem.datasetIndex;
+                        const pointIndex = tooltipItem.dataIndex;
+                        const symbol = filteredCharts[chartIndex].metaData.symbol_fa[pointIndex];
+                        const value = tooltipItem.raw;
+                        console.log("tooltipItem",tooltipItem)
+                        console.log("chartIndex",chartIndex)
+                        console.log("pointIndex",pointIndex)
+                        console.log("filteredCharts",filteredCharts)
+                        return [`نماد: ${symbol}`, `مقدار: ${value}`];
+                      },
+                    },
+                    titleFont: { size: 17 }, // Increase the title font size
+                    bodyFont: { size: 19 },  // Increase the body font size
+                  },
+                  
+                  annotation: {
+                    annotations: chart.annotations, // Use the annotations here
                   },
                 },
-                beginAtZero: true,
-              };
-              return acc;
-            }, {}),
-          },
-        }}
-      />
-            ) : (
-              <div>No data to display for this chart.</div>
-            )}
+                scales: {
+                  x: {
+                    title: {
+                      display: true,
+                      text: chartOptions[selectedField]?.xaxis_title || 'X-Axis',
+                      font: {
+                        size: 17,
+                        family: "Vazir-Medium",
+                      },
+                    },
+                    ticks: {
+                      font: {
+                        size: 14,
+                        family: "Vazir-Medium",
+                      },
+                    },
+                  },
+                  ...chartOptions[selectedField].yaxis.reduce((acc, yaxisConfig) => {
+                    acc[`y-axis-${yaxisConfig.yaxis_id}`] = {
+                      type: 'linear',
+                      display: true,
+                      position: yaxisConfig.position || 'left',
+                      title: {
+                        display: true,
+                        text: yaxisConfig.name,
+                        font: {
+                          size: 14,
+                          family: "Vazir-Medium",
+                        },
+                      },
+                      beginAtZero: true,
+                    };
+                    return acc;
+                  }, {}),
+                },
+              }}
+            />
+                  ) : (
+                    <div>No data to display for this chart.</div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
+        </div>
       </div>
-    </div>
+    
   );
 };
 

@@ -87,47 +87,42 @@ const DetailPopup = ({ instrumentId, onClose }) => {
 
   return (
     <Modal onClose={onClose}>
-      <div className="flex flex-col h-full bg-white p-4 m-2 rounded-lg max-w-full max-h-[95%] overflow-hidden relative transition-all duration-300 ease-in-out md:max-w-[800px] lg:max-w-[1000px] xl:max-w-[1500px] 2xl:max-w-[1800px] ">
-        
+      <div className="flex flex-col h-full bg-navy text-gold p-4 m-2 rounded-lg max-w-full max-h-[95%] overflow-hidden relative transition-all duration-300 ease-in-out md:max-w-[800px] lg:max-w-[1000px] xl:max-w-[1500px] 2xl:max-w-[1800px] " style={{fontFamily: 'Vazir, tahoma, Arial, sans-serif'}}>
         {/* Display Symbol at the top */}
-        <div className="text-center font-bold text-xl mb-4 text-[color:var(--color-primary-variant2)]">
-          {symbolFa || 'بارگذاری...'} {/* Display 'Loading...' if symbol is not yet available */}
+        <div className="text-center font-bold text-xl mb-4 text-gold">
+          {symbolFa || 'بارگذاری...'}
         </div>
-
         <div className="flex-1 overflow-y-auto p-4">
           {tabs.find((tab) => tab.id === activeTab).content}
         </div>
-
         <div className="flex items-center justify-center mt-auto flex-wrap">
           <button
-            className="text-gray-500 p-4 text-2xl hover:text-[#2F657D] transition-colors duration-300"
+            className="text-gold p-4 text-2xl hover:text-navy transition-colors duration-300"
             onClick={() => handleArrowClick(-1)}
             disabled={tabs.findIndex((tab) => tab.id === activeTab) === 0}
           >
             &lt;
           </button>
-
           <div className="flex-1 flex justify-between relative mx-4">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                className={`flex-1 text-center py-2 transition-colors duration-300 ${activeTab === tab.id ? 'text-[#2F657D]' : 'text-gray-500'}`}
+                className={`flex-1 text-center py-2 transition-colors duration-300 font-bold ${activeTab === tab.id ? 'text-gold' : 'text-navy/60'}`}
                 onClick={() => handleTabChange(tab.id)}
               >
                 {tab.label}
               </button>
             ))}
             <span
-              className="absolute bottom-[-2px] left-0 h-0.5 bg-[#2F657D] transition-transform duration-300"
+              className="absolute bottom-[-2px] left-0 h-0.5 bg-gold transition-transform duration-300"
               style={{
                 width: `${underlineWidth}%`,
                 transform: underlineTransform,
               }}
             ></span>
           </div>
-
           <button
-            className="text-gray-500 p-4 text-2xl hover:text-[#2F657D] transition-colors duration-300"
+            className="text-gold p-4 text-2xl hover:text-navy transition-colors duration-300"
             onClick={() => handleArrowClick(1)}
             disabled={tabs.findIndex((tab) => tab.id === activeTab) === tabs.length - 1}
           >
