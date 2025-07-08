@@ -160,7 +160,6 @@ function HomePage() {
         <div className="w-full px-4 flex flex-col md:flex-row items-center justify-between gap-8">
               {/* Text Content */}
               <div className="w-full md:w-1/2 mb-10 md:mb-0 text-center md:text-right">
-            <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-navy drop-shadow-sm">با تحلیل بورس؛</h1>
             <div className="relative h-24 md:h-32 overflow-hidden mb-6">
                     {heroSlides.map((slide, index) => (
                       <div 
@@ -177,13 +176,13 @@ function HomePage() {
                     ))}
                   </div>
                 <div className="mt-10">
-                  <AnimatedButton
+                  <button
                     className="bg-gold text-navy font-bold py-4 px-10 rounded-lg text-lg md:text-xl shadow  hover:text-white transition drop-shadow-sm border-2 border-gold"
                     as={Link}
                     to="/register"
                   >
                     ثبت‌ نام
-                  </AnimatedButton>
+                  </button>
                 </div>
                 <div className="flex justify-center md:justify-start space-x-2 space-x-reverse mt-8">
                   {heroSlides.map((_, index) => (
