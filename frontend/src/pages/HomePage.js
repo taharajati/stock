@@ -176,13 +176,13 @@ function HomePage() {
                     ))}
                   </div>
                 <div className="mt-10">
-                  <button
+                  <Link
                     className="bg-gold text-navy font-bold py-4 px-10 rounded-lg text-lg md:text-xl shadow  hover:text-white transition drop-shadow-sm border-2 border-gold"
                     as={Link}
                     to="/register"
                   >
                     ثبت‌ نام
-                  </button>
+                  </Link>
                 </div>
                 <div className="flex justify-center md:justify-start space-x-2 space-x-reverse mt-8">
                   {heroSlides.map((_, index) => (
