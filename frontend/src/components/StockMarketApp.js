@@ -12,6 +12,7 @@ import StrategyPositionsTable from "./stock-market/StrategiesTable/StrategyPosit
 import MainPage from "./stock-market/Mainpage/MainPage.jsx";
 import FundsTable from "./stock-market/FundsTable/FundsTable.jsx";
 
+
 // Import context (if exists)
 import { ReportProvider } from "../context/stock-market-context.jsx";
 
@@ -34,8 +35,6 @@ function StockMarketApp() {
               <Route path="MainPage" element={<MainPage />} />
               <Route path="FundsTable" element={<FundsTable/>} />
               <Route path="strategies/:url" element={<StrategyPositionsTable />} />
-              <Route path="post/:uniqueId" element={<PostDetail />} />
-              <Route path="group/:groupId" element={<GroupPostDetail />} />
               <Route path="operational_strategies" element={<StrategiesTable />} />
               <Route path="" element={<Navigate to="MainPage" />} />
             </Routes>
