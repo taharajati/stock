@@ -11,9 +11,6 @@ import StrategiesTable from "./stock-market/StrategiesTable/StrategiesTable.jsx"
 import StrategyPositionsTable from "./stock-market/StrategiesTable/StrategyPositionsTable.jsx";
 import MainPage from "./stock-market/Mainpage/MainPage.jsx";
 import FundsTable from "./stock-market/FundsTable/FundsTable.jsx";
-import Blog from "./stock-market/Blog/Blog.jsx";
-import PostDetail from "./stock-market/Blog/PostDetail.jsx";
-import GroupPostDetail from "./stock-market/Blog/GroupPostDetail.jsx";
 
 // Import context (if exists)
 import { ReportProvider } from "../context/stock-market-context.jsx";
@@ -37,7 +34,6 @@ function StockMarketApp() {
               <Route path="MainPage" element={<MainPage />} />
               <Route path="FundsTable" element={<FundsTable/>} />
               <Route path="strategies/:url" element={<StrategyPositionsTable />} />
-              <Route path="Blog" element={<Blog />} />
               <Route path="post/:uniqueId" element={<PostDetail />} />
               <Route path="group/:groupId" element={<GroupPostDetail />} />
               <Route path="operational_strategies" element={<StrategiesTable />} />

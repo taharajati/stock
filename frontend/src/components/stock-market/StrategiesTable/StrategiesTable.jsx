@@ -52,7 +52,7 @@ const StrategiesTable = () => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex mr-20">
       <OptionSidebar />
       <div className="flex-1 mx-auto p-6 w-full md:w-[80%] lg:w-[75%] xl:w-[65%]">
         {/* Error or loading message */}

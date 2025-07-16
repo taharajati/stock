@@ -27,8 +27,15 @@ app.use((req, res, next) => {
 });
 
 // Connect to MongoDB
+if (!process.env.MONGODB_URI) {
+  console.error('ERROR: MONGODB_URI is not set in .env file!');
+  process.exit(1);
+}
+
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB Atlas'))
+  .then(() => {
+    console.log('Connected to MongoDB at', process.env.MONGODB_URI);
+  })
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Session configuration
@@ -72,6 +79,10 @@ app.use('/auth', authRoutes);
 const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);
 
+// Blog API routes
+const blogRoutes = require('./routes/blog');
+app.use('/api/blog', blogRoutes);
+
 // Serve static files from the React app in production
 if (process.env.NODE_ENV === 'production') {
   const frontendBuildPath = path.join(__dirname, '../frontend/build');
@@ -89,6 +100,9 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(frontendBuildPath, 'index.html'));
   });
 }
+
+// Serve uploaded images
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Error handling middleware
 app.use((err, req, res, next) => {

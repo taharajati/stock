@@ -31,10 +31,6 @@
   font-weight: 500;
 }
 
-.nav a:hover {
-  color: #007bff;
-}
-
 .auth-section {
   display: flex;
   align-items: center;
@@ -55,19 +51,4 @@
 .user-name {
   margin-left: 10px;
   font-weight: 500;
-}
-
-.btn-logout {
-  background-color: transparent;
-  color: #dc3545;
-  padding: 5px 10px;
-  border: 1px solid #dc3545;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-logout:hover {
-  background-color: #dc3545;
-  color: white;
 } 

@@ -39,35 +39,19 @@
 }
 
 :root {
-    --color-bg: #F1F1F1;
-    --color-primary: #394258;
-    --color-text: #D5B263;
-    --color-primary-variant: #CB1950;
-    --color-primary-variant2: #b01747;
-    --color-primary-variant-02: #F6EBEB;
-    --color-light: #F1F9FA;
-    --color-bg-variant: #293040;
-    --color-bg-01 : #E3E3E3 ;
-
-    --color-white: #223a43  ;
-
-    --transition: all 400ms ease ;
-
-    --container-width-lg: 75%;
-    --container-width-md: 86%;
-    --container-width-sm: 90%;
+    /* متغیرهای theme اینجا حذف شد و فقط در index.css تعریف می‌شود */
 }
 
 
 *{
 
-    font-family:'Vazir-Medium';
+    font-family:'Vazir';
     font-size: medium;
 
 }
 
 
 body{
-    font-family: 'Vazir-Medium';
+    font-family: 'Vazir';
     font-size: medium;
 }

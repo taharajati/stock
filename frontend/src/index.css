@@ -348,3 +348,37 @@
   background: rgba(212, 180, 64, 0.4);
   animation: ripple 0.6s linear;
 } 
+
+/* Theme color variables */
+:root {
+  --theme-bg-main: #07302f;      /* midnight-green */
+  --theme-bg-white: #FFFFFF;     /* سفید */
+  --theme-accent: #E1AD37;       /* lion */
+  --theme-accent2: #D9D0BF;      /* bone */
+  --theme-accent3: #0D0D0D;      /* night */
+  --theme-text: #FFFFFF;         /* نوشته روی تیره */
+  --theme-text-dark: #0D0D0D;    /* نوشته روی روشن */
+}
+
+.bg-theme-main { background: var(--theme-bg-main) !important; }
+.bg-theme-white { background: var(--theme-bg-white) !important; }
+.bg-theme-accent { background: var(--theme-accent) !important; }
+.bg-theme-accent2 { background: var(--theme-accent2) !important; }
+.bg-theme-accent3 { background: var(--theme-accent3) !important; }
+.text-theme { color: var(--theme-text) !important; }
+.text-theme-dark { color: var(--theme-text-dark) !important; }
+.text-theme-accent { color: var(--theme-accent) !important; }
+.text-theme-accent2 { color: var(--theme-accent2) !important; }
+.text-theme-accent3 { color: var(--theme-accent3) !important; }
+.border-theme-accent { border-color: var(--theme-accent) !important; }
+.border-theme-accent2 { border-color: var(--theme-accent2) !important; }
+.shadow-theme-accent2\/20 { box-shadow: 0 0 8px var(--theme-accent2, #cccccc) !important; } 
+
+.ql-editor {
+  direction: rtl;
+  text-align: right;
+}
+.rtl-quill .ql-editor {
+  direction: rtl;
+  text-align: right;
+} 

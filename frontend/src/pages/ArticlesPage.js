@@ -1,61 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 function ArticlesPage() {
-  const articles = [
-    {
-      id: 1,
-      title: 'راهنمای جامع تحلیل تکنیکال در بورس',
-      excerpt: 'در این مقاله به بررسی اصول و روش‌های تحلیل تکنیکال در بازار بورس می‌پردازیم...',
-      category: 'تحلیل تکنیکال',
-      date: '۱۴۰۲/۱۲/۱۵',
-      readTime: '۸ دقیقه',
-      image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      author: {
-        name: 'علی محمدی',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=60'
-      }
-    },
-    {
-      id: 2,
-      title: 'نحوه تحلیل بنیادی شرکت‌های بورسی',
-      excerpt: 'بررسی صورت‌های مالی و شاخص‌های مهم در تحلیل بنیادی شرکت‌های بورسی...',
-      category: 'تحلیل بنیادی',
-      date: '۱۴۰۲/۱۲/۱۰',
-      readTime: '۱۰ دقیقه',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      author: {
-        name: 'سارا احمدی',
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=60'
-      }
-    },
-    {
-      id: 3,
-      title: 'استراتژی‌های مدیریت ریسک در سرمایه‌گذاری',
-      excerpt: 'آموزش روش‌های مدیریت ریسک و حفظ سرمایه در بازارهای مالی...',
-      category: 'مدیریت ریسک',
-      date: '۱۴۰۲/۱۲/۰۵',
-      readTime: '۱۲ دقیقه',
-      image: 'https://images.unsplash.com/photo-1559523161-0fc0d8b38a7a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      author: {
-        name: 'محمد رضایی',
-        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=60'
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchArticles() {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await fetch('/api/blog/posts');
+        if (!res.ok) throw new Error('خطا در دریافت مقالات');
+        const data = await res.json();
+        setArticles(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     }
-  ];
+    fetchArticles();
+  }, []);
 
   const categories = [
     'همه مقالات',
-    'تحلیل تکنیکال',
-    'تحلیل بنیادی',
-    'مدیریت ریسک',
-    'بازارهای جهانی',
-    'اقتصاد کلان'
+    // دسته‌بندی‌ها را می‌توان از تگ‌ها یا فیلد category استخراج کرد
   ];
 
   return (
     <div className="py-16 rtl">
       <div className="max-w-7xl mx-auto px-4">
+        {/* Admin Button */}
+        <div className="flex justify-end mb-4">
+          <Link
+            to="/admin/blog"
+            className="px-4 py-2 bg-gold text-navy rounded-lg font-bold hover:bg-gold-dark transition"
+          >
+            مدیریت مقالات
+          </Link>
+        </div>
         {/* Header Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">مقالات آموزشی</h1>
@@ -81,51 +66,62 @@ function ArticlesPage() {
         </div>
 
         {/* Articles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {articles.map((article) => (
-            <article key={article.id} className={`bg-white rounded-xl shadow-lg overflow-hidden border-2 ${article.category === 'تحلیل تکنیکال' ? 'border-gold scale-105 z-10' : 'border-navy/20'}`}>
-              <div className="relative h-48">
-                <img
-                  src={article.image}
-                  alt={article.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-4 right-4 bg-gold text-navy px-3 py-1 rounded-full text-sm font-bold shadow">
-                  {article.category}
-                </div>
-              </div>
-              <div className="p-6">
-                <div className="flex items-center mb-4">
+        {loading ? (
+          <div className="text-center text-lg text-gray-500">در حال بارگذاری...</div>
+        ) : error ? (
+          <div className="text-center text-red-500">{error}</div>
+        ) : articles.length === 0 ? (
+          <div className="text-center text-gray-500">مقاله‌ای یافت نشد.</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {articles.map((article) => (
+              <article key={article._id} className={`bg-white rounded-xl shadow-lg overflow-hidden border-2 border-navy/20`}>
+                <div className="relative h-48">
                   <img
-                    src={article.author.avatar}
-                    alt={article.author.name}
-                    className="w-10 h-10 rounded-full ml-3"
+                    src={article.title_image || '/assets/stock-market/bg.jpg'}
+                    alt={article.title}
+                    className="w-full h-full object-cover"
                   />
-                  <div>
-                    <p className="text-sm font-medium text-navy">{article.author.name}</p>
-                    <p className="text-sm text-gray-500">{article.date}</p>
+                  {/* دسته‌بندی یا تگ */}
+                  {article.tags && article.tags.length > 0 && (
+                    <div className="absolute top-4 right-4 bg-gold text-navy px-3 py-1 rounded-full text-sm font-bold shadow">
+                      {article.tags[0]}
+                    </div>
+                  )}
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center mb-4">
+                    <img
+                      src={article.author?.avatar || '/assets/stock-market/logo1.png'}
+                      alt={article.author?.name || 'نویسنده'}
+                      className="w-10 h-10 rounded-full ml-3"
+                    />
+                    <div>
+                      <p className="text-sm font-medium text-navy">{article.author?.name || 'نویسنده'}</p>
+                      <p className="text-sm text-gray-500">{article.published_date_jalali}</p>
+                    </div>
+                  </div>
+                  <h2 className="text-xl font-bold text-navy mb-2">{article.title}</h2>
+                  <p className="text-gray-700 mb-4">{article.summary || (article.content?.slice(0, 100) + '...')}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500 flex items-center">
+                      <svg className="h-5 w-5 ml-1 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {article.readTime || ''}
+                    </span>
+                    <Link
+                      to={`/articles/${article._id}`}
+                      className="text-gold hover:text-gold-dark font-bold"
+                    >
+                      ادامه مطلب
+                    </Link>
                   </div>
                 </div>
-                <h2 className="text-xl font-bold text-navy mb-2">{article.title}</h2>
-                <p className="text-gray-700 mb-4">{article.excerpt}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500 flex items-center">
-                    <svg className="h-5 w-5 ml-1 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    {article.readTime}
-                  </span>
-                  <Link
-                    to={`/articles/${article.id}`}
-                    className="text-gold hover:text-gold-dark font-bold"
-                  >
-                    ادامه مطلب
-                  </Link>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
+              </article>
+            ))}
+          </div>
+        )}
 
         {/* Newsletter Section */}
         <div className="mt-16 bg-white border-2 border-gold rounded-2xl p-8 md:p-12">

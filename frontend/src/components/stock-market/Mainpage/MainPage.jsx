@@ -131,7 +131,12 @@ useEffect(() => {
    // }
 //  
     // Check if any of the fetched data is missing
-    if (!data || !etfData || !differenceData) {
+    // نمایش نمودارها حتی اگر داده‌ها نبودند
+    const safeData = data || [];
+    const safeEtfData = etfData || [];
+    const safeDifferenceData = differenceData || [];
+    // فقط اگر همه داده‌ها null بود پیام خطا بده
+    if (!data && !etfData && !differenceData) {
       return (
         <div className="text-center mt-8 text-lg font-semibold text-red-500">
           خطا در بارگذاری داده‌ها
@@ -141,12 +146,14 @@ useEffect(() => {
 
 
 // Extract all values for a specific field
-const extractFieldData = (field) => {
-  return data.map((item) => item[field]);
+const extractFieldData = (field, arr = safeData) => {
+  if (!Array.isArray(arr)) return [];
+  return arr.map((item) => item[field]);
 };
 // Extract all values for a specific field
-const extractDifferenceFieldData = (field) => {
-  return differenceData.map((item) => item[field]);
+const extractDifferenceFieldData = (field, arr = safeDifferenceData) => {
+  if (!Array.isArray(arr)) return [];
+  return arr.map((item) => item[field]);
 };
 
 
@@ -798,7 +805,7 @@ const prepareCharts = (data) => {
 
       average: {
         data: {
-    labels: differenceData.map((item) => item.ua_difference_group), // استفاده از ua_difference_group به عنوان محور X
+    labels: safeDifferenceData.map((item) => item.ua_difference_group), // استفاده از ua_difference_group به عنوان محور X
     datasets: [
       {
         label: "میانگین نوسان پذیری ضمنی اختیار خرید",
@@ -908,7 +915,7 @@ const prepareCharts = (data) => {
       // نمودار بازدهی آخرین معامله خرید و فروش
       lastprice: {
         data: {
-          labels: differenceData.map((item) => item.ua_difference_group),
+          labels: safeDifferenceData.map((item) => item.ua_difference_group),
           datasets: [
             {
               label: "بازدهی آخرین معامله خرید",
@@ -1016,7 +1023,7 @@ const prepareCharts = (data) => {
       // نمودار تعداد موقعیت‌های باز اختیار خرید و فروش
       openinterest: {
         data: {
-          labels: differenceData.map((item) => item.ua_difference_group),
+          labels: safeDifferenceData.map((item) => item.ua_difference_group),
           datasets: [
             {
               label: "تعداد موقعیت‌های باز اختیار خرید",
@@ -1124,7 +1131,7 @@ const prepareCharts = (data) => {
     };
   };
 
-  const charts = prepareCharts(data);
+  const charts = prepareCharts(safeData);
 
 
 

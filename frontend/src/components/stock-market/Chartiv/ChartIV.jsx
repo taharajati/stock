@@ -193,32 +193,20 @@ const getClosestStrikePrices= (strikePrices, ua_final) => {
   const filteredCharts = getChartData();
 
  
-  if (error) return (
-    <div className="flex">
-      <OptionSidebar />
-      <div className="flex-1 flex items-center justify-center">
-        <div className="bg-white rounded-lg p-5 max-w-md w-full mx-auto shadow-lg border-e-red-50">
-          <p className="text-2xl font-semibold mb-4 text-center text-[color:var(--color-primary-variant)]">{error}</p>
+  // صفحه همیشه نمایش داده شود حتی اگر خطا یا داده نبود
+  // فقط اگر loading باشد، لودینگ نمایش بده ولی ساختار صفحه حفظ شود
+  if (loading) {
+    return (
+      <div className="flex">
+        <OptionSidebar />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-700"></div>
         </div>
       </div>
-    </div>
-  );
-  if (!data) return (
-    <div className="flex">
-      <OptionSidebar />
-      <div className="flex-1 flex items-center justify-center">
-        <div>No data available to display.</div>
-      </div>
-    </div>
-  );
-  if (loading) return (
-    <div className="flex">
-      <OptionSidebar />
-      <div className="flex-1 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-700"></div>
-      </div>
-    </div>
-  );
+    );
+  }
+  // اگر خطا یا داده نبود، ساختار صفحه و فیلترها و سایدبار و باکس نمودار نمایش داده شود
+  const noChartData = !data || !Array.isArray(data) || data.length === 0 || filteredCharts.length === 0;
 
   // List of field types for buttons
   const fieldTypes = Object.keys(chartOptions).map(key => ({
@@ -228,7 +216,7 @@ const getClosestStrikePrices= (strikePrices, ua_final) => {
 
   console.log("filteredCharts",filteredCharts)
   return (
-    <div className="flex">
+    <div className="flex mr-20">
       <OptionSidebar />
       <div className="flex-1">
         <div className="chart-container">
@@ -314,106 +302,105 @@ const getClosestStrikePrices= (strikePrices, ua_final) => {
             {/* Render charts for the selected field */}
             <div className="chart-group w-[1100px] text-right my-3  float-right mr-[60px]">
               <h4 className="chart-box text-xl ">{fieldTypes.find(type => type.key === selectedField)?.label}</h4>
-              {filteredCharts.map((chart, chartIndex) => (
-                <div key={chartIndex} className="chart-box my-4 ">
-                  <div className="chart-meta flex space-x-5 text-lg justify-center">
-                    <p className='bg-[color:var(--color-bg)] text-black  rounded-lg px-4 py-2'>نماد: {chart.metaData.ua_instrument_symbol_fa}</p>
-                    <p className='bg-[color:var(--color-bg)] text-black  rounded-lg px-4 py-2'>نوع اختیار: {chart.metaData.option_type_fa}</p>
-                    <p className='bg-[color:var(--color-bg)] text-black  rounded-lg px-4 py-2'>تاریخ سررسید: {chart.metaData.end_date_fa}</p>
+              {noChartData ? (
+                <div className="my-8 text-center text-lg text-gray-500">داده‌ای برای نمایش وجود ندارد.</div>
+              ) : (
+                filteredCharts.map((chart, chartIndex) => (
+                  <div key={chartIndex} className="chart-box my-4 ">
+                    <div className="chart-meta flex space-x-5 text-lg justify-center">
+                      <p className='bg-[color:var(--color-bg)] text-black  rounded-lg px-4 py-2'>نماد: {chart.metaData.ua_instrument_symbol_fa}</p>
+                      <p className='bg-[color:var(--color-bg)] text-black  rounded-lg px-4 py-2'>نوع اختیار: {chart.metaData.option_type_fa}</p>
+                      <p className='bg-[color:var(--color-bg)] text-black  rounded-lg px-4 py-2'>تاریخ سررسید: {chart.metaData.end_date_fa}</p>
+                    </div>
+                    {chart.labels.length > 0 ? (
+                      <Line
+                        data={chart}
+                        options={{
+                          responsive: true,
+                          plugins: {
+                            title: {
+                              display: true,
+                              text: `${chartOptions[selectedField].title}`,
+                              font: {
+                                size: 20,
+                                family: "Vazir-Medium",
+                                weight: 'bold',
+                              },
+                            },
+                            legend: {
+                              position: 'top',
+                              labels: {
+                                font: {
+                                  size: 17,
+                                  family: "Vazir-Medium",
+                                },
+                              },
+                            },
+                            tooltip: {
+                              callbacks: {
+                                label: function(tooltipItem) {
+                                  const chartIndex = tooltipItem.datasetIndex;
+                                  const pointIndex = tooltipItem.dataIndex;
+                                  const symbol = filteredCharts[chartIndex].metaData.symbol_fa[pointIndex];
+                                  const value = tooltipItem.raw;
+                                  return [`نماد: ${symbol}`, `مقدار: ${value}`];
+                                },
+                              },
+                              titleFont: { size: 17 },
+                              bodyFont: { size: 19 },
+                            },
+                            annotation: {
+                              annotations: chart.annotations,
+                            },
+                          },
+                          scales: {
+                            x: {
+                              title: {
+                                display: true,
+                                text: chartOptions[selectedField]?.xaxis_title || 'X-Axis',
+                                font: {
+                                  size: 17,
+                                  family: "Vazir-Medium",
+                                },
+                              },
+                              ticks: {
+                                font: {
+                                  size: 14,
+                                  family: "Vazir-Medium",
+                                },
+                              },
+                            },
+                            ...chartOptions[selectedField].yaxis.reduce((acc, yaxisConfig) => {
+                              acc[`y-axis-${yaxisConfig.yaxis_id}`] = {
+                                type: 'linear',
+                                display: true,
+                                position: yaxisConfig.position || 'left',
+                                title: {
+                                  display: true,
+                                  text: yaxisConfig.name,
+                                  font: {
+                                    size: 14,
+                                    family: "Vazir-Medium",
+                                  },
+                                },
+                                beginAtZero: true,
+                              };
+                              return acc;
+                            }, {}),
+                          },
+                        }}
+                      />
+                    ) : (
+                      <div>داده‌ای برای نمایش این نمودار وجود ندارد.</div>
+                    )}
                   </div>
-                  {chart.labels.length > 0 ? (
-              <Line
-              data={chart}
-              options={{
-                responsive: true,
-                plugins: {
-                  title: {
-                    display: true,
-                    text: `${chartOptions[selectedField].title}`,
-                    font: {
-                      size: 20,
-                      family: "Vazir-Medium",
-                      weight: 'bold',
-                    },
-                  },
-                  legend: {
-                    position: 'top',
-                    labels: {
-                      font: {
-                        size: 17,
-                        family: "Vazir-Medium",
-                      },
-                    },
-                  },
-                  tooltip: {
-                    callbacks: {
-                      label: function(tooltipItem) {
-                        const chartIndex = tooltipItem.datasetIndex;
-                        const pointIndex = tooltipItem.dataIndex;
-                        const symbol = filteredCharts[chartIndex].metaData.symbol_fa[pointIndex];
-                        const value = tooltipItem.raw;
-                        console.log("tooltipItem",tooltipItem)
-                        console.log("chartIndex",chartIndex)
-                        console.log("pointIndex",pointIndex)
-                        console.log("filteredCharts",filteredCharts)
-                        return [`نماد: ${symbol}`, `مقدار: ${value}`];
-                      },
-                    },
-                    titleFont: { size: 17 }, // Increase the title font size
-                    bodyFont: { size: 19 },  // Increase the body font size
-                  },
-                  
-                  annotation: {
-                    annotations: chart.annotations, // Use the annotations here
-                  },
-                },
-                scales: {
-                  x: {
-                    title: {
-                      display: true,
-                      text: chartOptions[selectedField]?.xaxis_title || 'X-Axis',
-                      font: {
-                        size: 17,
-                        family: "Vazir-Medium",
-                      },
-                    },
-                    ticks: {
-                      font: {
-                        size: 14,
-                        family: "Vazir-Medium",
-                      },
-                    },
-                  },
-                  ...chartOptions[selectedField].yaxis.reduce((acc, yaxisConfig) => {
-                    acc[`y-axis-${yaxisConfig.yaxis_id}`] = {
-                      type: 'linear',
-                      display: true,
-                      position: yaxisConfig.position || 'left',
-                      title: {
-                        display: true,
-                        text: yaxisConfig.name,
-                        font: {
-                          size: 14,
-                          family: "Vazir-Medium",
-                        },
-                      },
-                      beginAtZero: true,
-                    };
-                    return acc;
-                  }, {}),
-                },
-              }}
-            />
-                  ) : (
-                    <div>No data to display for this chart.</div>
-                  )}
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>
-      </div>
     
+    </div>
   );
 };
 

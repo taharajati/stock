@@ -392,7 +392,7 @@ const instrumentOptions = (Array.isArray(instruments) ? instruments : []).map(in
 
 
   return (
-    <div className="flex">
+    <div className="flex mr-10">
       <OptionSidebar />
       <div className="flex-1">
         <div className="p-4  mx-auto float-right mr-[60px]" dir="rtl">

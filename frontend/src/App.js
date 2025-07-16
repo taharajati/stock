@@ -16,6 +16,8 @@ import ArticlesPage from './pages/ArticlesPage.js';
 import AboutPage from './pages/AboutPage.js';
 import ContactPage from './pages/ContactPage.js';
 import SetupPasswordPage from './pages/SetupPasswordPage.js';
+import Footer from './components/Footer.js';
+import BlogAdmin from './pages/BlogAdminPage.js';
 
 // Stock Market App
 import StockMarketApp from './components/StockMarketApp.js';
@@ -38,6 +40,8 @@ function App() {
         <Route path="/articles" element={<ArticlesPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/admin/blog" element={<BlogAdmin />} />
+
 
         {/* Protected Routes */}
         <Route path="/dashboard" element={<DashboardPage />} />
@@ -49,6 +53,7 @@ function App() {
         {/* 404 Route */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      {!isStockMarket && <Footer />}
     </>
   );
 }
