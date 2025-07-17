@@ -208,7 +208,7 @@ function HomePage() {
               </div>
                   {/* Hero Image/Graphic */}
                   <div className="w-full md:w-1/2 flex justify-center">
-                <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px]" style={{ transform: `translateY(${-parallaxY * 0.2}px)` }}>
+                <div className="relative w-[500px] h-[300px] md:w-[800px] md:h-[400px]" style={{ transform: `translateY(${-parallaxY * 0.2}px)` }}>
                   {/* Main circle */}
                   <div className="absolute inset-0 rounded-full border-4 border-gold/30 animate-spin-slow"></div>
                   {/* Inner circles */}
@@ -216,14 +216,12 @@ function HomePage() {
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/5 h-3/5 rounded-full border border-gold/20 animate-spin-slow" style={{ animationDuration: '10s' }}></div>
                   {/* Orbiting Elements */}
                   {/* Hero Image - dynamic (rectangular, not circle) */}
-                  <div className="absolute top-1/2 left-1/2 z-30" style={{transform: 'translate(-50%, -50%)', width: '75%', height: '75%'}}>
-  <img
-    src={heroImages[activeSlide]}
-    alt="Hero"
-    className="rounded-2xl shadow-2xl object-cover w-full h-full border-4 border-white/60"
-    style={{boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)'}}
-  />
-</div>
+                 <img
+  src={heroImages[activeSlide]}
+  alt="Hero"
+  className="rounded-xl shadow-lg object-cover w-full h-full"
+  style={{ maxWidth: '100%', maxHeight: '100%' }}
+/>
                   {/* Orbit بزرگ طلایی - partly over and under image */}
                   <div className="absolute" style={{ bottom: '10%', right: '5%', zIndex: 25 }}>
                     <div className="w-40 h-40 rounded-full border-4 border-gold shadow-lg opacity-40 relative" style={{ top: '30px', right: '-30px' }}></div>
