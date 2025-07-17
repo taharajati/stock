@@ -164,7 +164,18 @@ function HomePage() {
   return (
     <div className="rtl min-h-screen bg-theme-white" style={{fontFamily: 'Vazir, tahoma, Arial, sans-serif'}}>
       {/* Hero Section */}
-      <section className="relative w-full pt-16 pb-20 overflow-hidden bg-theme-white text-theme-dark">
+      <section
+        className="relative w-full pt-16 pb-20 overflow-hidden  text-theme-dark"
+        style={{
+          backgroundImage: ` url(${heroImages[activeSlide]})`,
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          transition: 'background-image 0.7s ease'
+        }}
+      >
+        {/* Overlay (برای خوانایی بیشتر متن) */}
+        {/* اگر نیاز به تیرگی بیشتر بود، مقدار rgba را تغییر بده */}
         {/* دایره‌های accent */}
         <div className="absolute top-0 right-0 w-80 h-80 rounded-full opacity-10 blur-3xl -z-10 bg-theme-accent"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full opacity-10 blur-3xl -z-10 bg-theme-accent2"></div>
@@ -208,7 +219,7 @@ function HomePage() {
               </div>
                   {/* Hero Image/Graphic */}
                   <div className="w-full md:w-1/2 flex justify-center">
-                <div className="relative w-[500px] h-[300px] md:w-[800px] md:h-[400px]" style={{ transform: `translateY(${-parallaxY * 0.2}px)` }}>
+                <div className="relative w-[500px] h-[300px] md:w-[400px] md:h-[400px]" style={{ transform: `translateY(${-parallaxY * 0.2}px)` }}>
                   {/* Main circle */}
                   <div className="absolute inset-0 rounded-full border-4 border-gold/30 animate-spin-slow"></div>
                   {/* Inner circles */}
@@ -216,12 +227,7 @@ function HomePage() {
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/5 h-3/5 rounded-full border border-gold/20 animate-spin-slow" style={{ animationDuration: '10s' }}></div>
                   {/* Orbiting Elements */}
                   {/* Hero Image - dynamic (rectangular, not circle) */}
-                 <img
-  src={heroImages[activeSlide]}
-  alt="Hero"
-  className="rounded-xl shadow-lg object-cover w-full h-full"
-  style={{ maxWidth: '100%', maxHeight: '100%' }}
-/>
+                  {/* حذف عکس هیرو از اینجا چون بک‌گراند شده است */}
                   {/* Orbit بزرگ طلایی - partly over and under image */}
                   <div className="absolute" style={{ bottom: '10%', right: '5%', zIndex: 25 }}>
                     <div className="w-40 h-40 rounded-full border-4 border-gold shadow-lg opacity-40 relative" style={{ top: '30px', right: '-30px' }}></div>
