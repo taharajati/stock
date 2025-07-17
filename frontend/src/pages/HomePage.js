@@ -81,9 +81,9 @@ function HomePage() {
   const [selectedProduct, setSelectedProduct] = useState(0);
   
   const heroImages = [
-    '/assets/hero1.jpg',
-    '/assets/hero2.jpg',
-    '/assets/hero3.jpg'
+    '/assets/hero1.png',
+    '/assets/hero2.png',
+    '/assets/hero3.png'
   ];
   
 
@@ -167,7 +167,7 @@ function HomePage() {
       <section
         className="relative w-full pt-16 pb-20 overflow-hidden  text-theme-dark"
         style={{
-          backgroundImage: ` url(${heroImages[activeSlide]})`,
+          backgroundImage: `url(${heroImages[activeSlide]})`,
           backgroundSize: 'contain',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
