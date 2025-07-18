@@ -11,71 +11,97 @@ function HomePage() {
   const statsRef = useRef(null);
   const [parallaxY, setParallaxY] = useState(0);
   
-  // Counter state for statistics
-  const [counts, setCounts] = useState({
-    users: 0,
-    individuals: 0,
-    companies: 0
-  });
-  
-  // Target values for the counters
-  const targetCounts = {
-    users: 15000,
-    individuals: 5000,
-    companies: 100
-  };
+  // حذف شمارنده‌های آماری و state مربوطه
+  // const [counts, setCounts] = useState({
+  //   users: 0,
+  //   individuals: 0,
+  //   companies: 0
+  // });
+  // const targetCounts = { ... };
+  // useEffect مربوط به شمارنده حذف شود
   
   const heroSlides = [
     {
-      title: "تحلیل‌های ما از صندوق‌های سرمایه‌گذاری هم دقیق‌تر است!",
-      description: "هر عددی در بورس، یک داستان دارد... ما آن را روایت می‌کنیم!"
+      title: "هر عددی در بورس، یک داستان دارد... ما آن را روایت می‌کنیم!",
+      description: "گزارشات اختصاصی؟ فقط یک کلیک فاصله داری!"
     },
     {
-      title: "کدال خوانی را به هوش مصنوعی ما بسپار، خودت نتیجه را ببین!",
-      description: "پرتفوی تو زیر ذره‌بینِ هوش مصنوعی ماست!"
+      title: "پرتفوی تو زیر ذره‌بینِ هوش مصنوعی ماست!",
+      description: "کدال خوانی را به هوش مصنوعی ما بسپار، خودت نتیجه را ببین!"
     },
     {
-      title: "گزارشات اختصاصی؟ فقط یک کلیک فاصله داری!",
-      description: "تصمیم‌های بزرگ از تحلیل‌های دقیق آغاز می‌شوند."
+      title: "تصمیم‌های بزرگ از تحلیل‌های دقیق آغاز می‌شوند.",
+      description: "گزارشات کدال را از هوش مصنوعی ما دنبال کن"
     }
   ];
   
   const products = [
     {
-      title: "تحلیل بنیادی",
-      shortDesc: "تحلیل بنیادی بیش از ۳۰۰ شرکت تولیدی با قابلیت تغییر مفروضات و شخصی‌سازی",
-      fullDesc: "دسترسی به صورت‌های مالی، محاسبه ارزش ذاتی، سناریوسازی و مقایسه شرکت‌ها. مناسب برای سرمایه‌گذاران بنیادی و تحلیل‌گران حرفه‌ای.",
+      title: "رصد وضعیت بازار",
+ 
       icon: (color) => (
-        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 0a2 2 0 002 2h2a2 2 0 002-2m-6 0V7a2 2 0 012-2h2a2 2 0 012 2v10" /></svg>
       ),
-      link: "/login"
+      features: [
+        "بررسی وضعیت روز بازار",
+        "ارائه نمودارهای مختلف مانند تعداد صف خرید و فروش، حجم صف، بازدهی لحظه‌ای، حجم معاملات، ورود و خروج پول حقیقی، اشتیاق بازار و ...",
+        "مشاهده مقادیر تاریخی",
+        "وضعیت بازار اختیار معامله"
+      ],
+      link: "/register"
     },
     {
-      title: "سبد پیشنهادی",
-      shortDesc: "پیشنهاد سبد سهام با سود بالا و ریسک کم همراه با تحلیل سهم‌های پیشنهادشده",
-      fullDesc: "دریافت سبدهای پیشنهادی متنوع بر اساس تحلیل بنیادی و تکنیکال، مناسب برای سرمایه‌گذاران با ریسک‌پذیری مختلف.",
+      title: "صندوق های سرمایه گذاری",
+
       icon: (color) => (
-        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M16 3v4M8 3v4m-5 4h18" /></svg>
       ),
-      link: "/login"
+      features: [
+        "تحلیل عملکرد و ریسک صندوق",
+        "تحلیل پرتفوی صندوق",
+        "بررسی وضعیت کلی بازار با استفاده از تغییرات صندوق های سرمایه گذاری"
+      ],
+      link: "/register"
     },
     {
-      title: "کدال پلاس",
-      shortDesc: "دسترسی کامل به گزارش‌های کدال و تحلیل سریع اطلاعیه‌های مهم بازار",
-      fullDesc: "دریافت و تحلیل سریع اطلاعیه‌های کدال، فیلتر اطلاعیه‌های مهم و مشاهده گزارش‌های مالی شرکت‌ها به صورت یکجا.",
+      title: "کدال",
+  
       icon: (color) => (
-        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>
+        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h10M7 16h10M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
       ),
-      link: "/login"
+      features: [
+        "امکان مشاهده وضعیت کلی بازار",
+        "مشاهده تولید و فروش و سود و زیان همه شرکت‌ها در قالب یک جدول",
+        "امکان شخصی‌سازی جداول",
+        "مشاهده جزئیات گزارشات هر شرکت"
+      ],
+      link: "/register"
     },
     {
-      title: "اخبار بازار",
-      shortDesc: "آخرین اخبار و تحلیل‌های بازار سرمایه و شرکت‌ها از منابع معتبر",
-      fullDesc: "دسترسی به جدیدترین اخبار و تحلیل‌های بازار سرمایه، اطلاع‌رسانی لحظه‌ای و تحلیل اخبار تاثیرگذار بر بازار.",
+      title: "اختیار معامله",
+
       icon: (color) => (
-        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>
+        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2M8 21l4-4 4 4" /></svg>
       ),
-      link: "/login"
+      features: [
+        "دیدبان اختیار معامله شامل پارامترهای تحلیلی مختلف",
+        "موقعیت‌های موجود بیش از 20 استراتژی مختلف",
+        "ماشین حساب استراتژی",
+        "نمودارهای تعاملی"
+      ],
+      link: "/register"
+    },
+    {
+      title: "مقالات آموزشی",
+
+      icon: (color) => (
+        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 20h9" /><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m0 0H3m9 0h9" /></svg>
+      ),
+      features: [
+        "مقالات آموزشی",
+        "مقالات تحلیلی"
+      ],
+      link: "/register"
     }
   ];
   const [selectedProduct, setSelectedProduct] = useState(0);
@@ -85,6 +111,14 @@ function HomePage() {
     '/assets/hero2.png',
     '/assets/hero3.png'
   ];
+
+  // Preload hero images on mount
+  React.useEffect(() => {
+    heroImages.forEach(src => {
+      const img = new window.Image();
+      img.src = src;
+    });
+  }, []);
   
 
 
@@ -95,7 +129,7 @@ function HomePage() {
     // Auto rotate hero slides
     const slideInterval = setInterval(() => {
       setActiveSlide(prev => (prev + 1) % heroSlides.length);
-    }, 5000);
+    }, 8000);
     
     // Parallax effect on scroll
     const handleScroll = () => {
@@ -125,37 +159,37 @@ function HomePage() {
  
   
   // Count up animation for statistics
-  useEffect(() => {
-    if (statsVisible) {
-      const duration = 2000; // ms
-      const interval = 16; // ms (60fps)
-      const steps = duration / interval;
+  // useEffect(() => {
+  //   if (statsVisible) {
+  //     const duration = 2000; // ms
+  //     const interval = 16; // ms (60fps)
+  //     const steps = duration / interval;
       
-      const increments = {
-        users: targetCounts.users / steps,
-        individuals: targetCounts.individuals / steps,
-        companies: targetCounts.companies / steps
-      };
+  //     const increments = {
+  //       users: targetCounts.users / steps,
+  //       individuals: targetCounts.individuals / steps,
+  //       companies: targetCounts.companies / steps
+  //     };
       
-      let currentStep = 0;
+  //     let currentStep = 0;
       
-      const timer = setInterval(() => {
-        currentStep++;
+  //     const timer = setInterval(() => {
+  //       currentStep++;
         
-        setCounts(prevCounts => ({
-          users: Math.min(Math.round(increments.users * currentStep), targetCounts.users),
-          individuals: Math.min(Math.round(increments.individuals * currentStep), targetCounts.individuals),
-          companies: Math.min(Math.round(increments.companies * currentStep), targetCounts.companies)
-        }));
+  //       setCounts(prevCounts => ({
+  //         users: Math.min(Math.round(increments.users * currentStep), targetCounts.users),
+  //         individuals: Math.min(Math.round(increments.individuals * currentStep), targetCounts.individuals),
+  //         companies: Math.min(Math.round(increments.companies * currentStep), targetCounts.companies)
+  //       }));
         
-        if (currentStep >= steps) {
-          clearInterval(timer);
-        }
-      }, interval);
+  //       if (currentStep >= steps) {
+  //         clearInterval(timer);
+  //       }
+  //     }, interval);
       
-      return () => clearInterval(timer);
-    }
-  }, [statsVisible]);
+  //     return () => clearInterval(timer);
+  //   }
+  // }, [statsVisible]);
   
   const handleSlideChange = (index) => {
     setActiveSlide(index);
@@ -253,7 +287,7 @@ function HomePage() {
         <div className="absolute top-0 right-0 w-72 h-72 bg-theme-accent rounded-full opacity-10 blur-3xl -z-10"></div>
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-theme-accent2 rounded-full opacity-10 blur-3xl -z-10"></div>
         <div className="w-full px-4">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-5 text-center text-theme-accent drop-shadow-sm">محصولات تحلیل بورس</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-5 text-center text-theme-accent drop-shadow-sm">محصولات لادیس</h2>
           <p className="text-center text-lg text-theme-accent mb-12 max-w-3xl mx-auto drop-shadow-sm">
             مرجع تحلیل بنیادی بورس ایران و ارائه‌دهنده ابزارهای پیشرفته تحلیل بازار سرمایه
           </p>
@@ -275,16 +309,36 @@ function HomePage() {
           </div>
           {/* اطلاعات کامل محصول انتخاب‌شده */}
           {products[selectedProduct] && (
-            <AnimatedCard className="max-w-3xl mx-auto rounded-xl shadow-lg border-t-4 border-theme-accent p-8 text-center animate-fade-in bg-theme-white text-theme-dark">
-              <div className="flex flex-col items-center gap-2 mb-4">
-                <div className="w-16 h-16 rounded-full bg-theme-accent/10 flex items-center justify-center mb-2">
-                  {products[selectedProduct].icon('#fff')}
+            <AnimatedCard className="max-w-4xl mx-auto rounded-2xl shadow-2xl border border-theme-accent bg-theme-main/30 text-theme-dark p-6 md:p-8 animate-fade-in" dir="rtl">
+              <div className="flex flex-row items-start gap-8"dir="rtl">
+                {/* Info Section */}
+                <div className=" items-end text-right" dir="rtl">
+                  <h3 className="text-3xl font-extrabold text-theme-dark mb-4">{products[selectedProduct].title}</h3>
+                  <ul className="mb-6 space-y-2 w-full">
+                    {products[selectedProduct].features.map((feature, idx) => (
+                      <li key={idx} className="text-theme-dark text-lg leading-relaxed flex flex-row-reverse items-center gap-2 justify-end">
+                      
+                        <span>{feature}</span>
+                        <svg className="w-5 h-5 text-theme-accent ml-2 flex-shrink-0 float-right" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-auto self-end ">
+                     <AnimatedButton
+                       as={Link}
+                       to={products[selectedProduct].link}
+                       className="bg-theme-accent text-theme-dark font-bold py-2 px-6 rounded-lg shadow hover:bg-theme-accent2 hover:text-theme transition-all duration-200"
+                     >
+                       مشاهده بیشتر
+                     </AnimatedButton>
+                   </div>
+           
                 </div>
-                <h3 className="text-2xl font-bold text-theme-dark mb-2">{products[selectedProduct].title}</h3>
-                <p className="text-theme-dark text-base mb-2">{products[selectedProduct].shortDesc}</p>
+                {/* Image Placeholder */}
+                <div className="w-40 h-40 md:w-56 md:h-56 bg-theme-accent/10 rounded-2xl flex-shrink-0"></div>
               </div>
-              <div className="text-theme-dark text-lg mb-6">{products[selectedProduct].fullDesc}</div>
-              <Link to={products[selectedProduct].link} className="bg-theme-accent text-theme-dark font-bold py-2 px-8 rounded-lg shadow hover:bg-theme-accent2 hover:text-theme transition drop-shadow-sm">مشاهده بیشتر</Link>
             </AnimatedCard>
           )}
         </div>
@@ -300,17 +354,14 @@ function HomePage() {
         <div className="absolute top-0 left-0 w-64 h-64 bg-theme-accent rounded-full opacity-10 blur-3xl -z-10"></div>
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-theme-accent2 rounded-full opacity-10 blur-3xl -z-10"></div>
         <div className="w-full px-4">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-6 text-center text-theme-dark drop-shadow-sm">مشتریان تحلیل بورس</h2>
-          <p className="text-center text-lg text-theme-dark mb-12 max-w-3xl mx-auto drop-shadow-sm">
-            آیا می‌دانستید %80 افرادی که بیش از 100 میلیارد تومان در بورس دارایی دارند از تحلیل بورس استفاده می‌کنند؟
-          </p>
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-6 text-center text-theme-dark drop-shadow-sm">مشتریان لادیس</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
             {/* کاربران */}
             <AnimatedCard className="rounded-xl p-10 shadow flex flex-col items-center justify-center text-center border-t-4 border-theme-accent bg-theme-white text-theme-dark">
               <div className="w-20 h-20 rounded-full bg-theme-accent/10 flex items-center justify-center mb-4">
                 <svg className="w-10 h-10 text-theme-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3" /></svg>
               </div>
-              <div className="text-4xl font-bold text-theme-dark mb-2 drop-shadow-sm">{counts.users.toLocaleString()}+</div>
+              <div className="text-4xl font-bold text-theme-dark mb-2 drop-shadow-sm">+100</div>
               <div className="text-lg font-medium text-theme-dark">کاربر فعال</div>
             </AnimatedCard>
             {/* حقیقی */}
@@ -318,7 +369,7 @@ function HomePage() {
               <div className="w-20 h-20 rounded-full bg-theme-accent/10 flex items-center justify-center mb-4">
                 <svg className="w-10 h-10 text-theme-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M16 8v8m-4-5v5m-4-2v2" /></svg>
               </div>
-              <div className="text-4xl font-bold text-theme-dark mb-2 drop-shadow-sm">{counts.individuals.toLocaleString()}+</div>
+              <div className="text-4xl font-bold text-theme-dark mb-2 drop-shadow-sm">90+</div>
               <div className="text-lg font-medium text-theme-dark">مشتری حقیقی</div>
             </AnimatedCard>
             {/* حقوقی */}
@@ -326,7 +377,7 @@ function HomePage() {
               <div className="w-20 h-20 rounded-full bg-theme-accent/10 flex items-center justify-center mb-4">
                 <svg className="w-10 h-10 text-theme-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v8l5 2" /></svg>
               </div>
-              <div className="text-4xl font-bold text-theme-dark mb-2 drop-shadow-sm">{counts.companies.toLocaleString()}+</div>
+              <div className="text-4xl font-bold text-theme-dark mb-2 drop-shadow-sm">+5</div>
               <div className="text-lg font-medium text-theme-dark">مشتری حقوقی</div>
             </AnimatedCard>
           </div>

@@ -40,7 +40,6 @@ function Header() {
   const navLinks = [
     { to: '/', label: 'خانه', match: (path) => path === '/' },
     { to: '/prices', label: 'قیمت‌ها', match: (path) => path.startsWith('/prices') },
-    { to: '/academy', label: 'آکادمی', match: (path) => path.startsWith('/academy') },
     { to: '/articles', label: 'مقاله‌ها', match: (path) => path.startsWith('/articles') },
     { to: '/about', label: 'درباره ما', match: (path) => path.startsWith('/about') },
     { to: '/contact', label: 'تماس با ما', match: (path) => path.startsWith('/contact') },
@@ -61,7 +60,7 @@ function Header() {
             <path d="M2 12h2v9H2v-9zm3-8h2v17H5V4zm3 4h2v13H8V8zm3-4h2v17h-2V4zm3 8h2v9h-2v-9zm3-8h2v17h-2V4z" />
           </svg>
           <span className="relative group leading-[48px]">
-            تحلیل بورس
+            لادیس
             <span className="absolute -bottom-1 left-0 w-0 h-1 bg-theme-accent rounded transition-all duration-300 group-hover:w-full"></span>
           </span>
         </button>
@@ -82,72 +81,51 @@ function Header() {
               </button>
               {/* Mega Menu */}
               {productMenuOpen && (
-                <div className="absolute top-full right-0 mt-3 w-[600px] bg-theme-main text-theme-accent shadow-2xl rounded-2xl p-6 grid grid-cols-2 gap-6 animate-fadeIn z-50 border border-theme-accent" style={{transformOrigin: 'top center'}}>
-                  <div>
-                    <h3 className="text-lg font-bold text-theme-accent mb-4 border-r-4 border-theme-accent pr-2">محصولات اصلی</h3>
-                    <ul className="space-y-3">
+                <div className="absolute top-full right-0 mt-3 w-[600px] bg-theme-main text-theme-accent shadow-2xl rounded-2xl p-6 animate-fadeIn z-50 border border-theme-accent" style={{transformOrigin: 'top center'}}>
+                  <div className="col-span-2">
+                    <ul className=" " dir='rtl'>
                       <li>
-                        <Link to="/products/fundamental" className="flex items-center text-theme-accent hover:text-theme-accent3 transition-colors">
-                          <div className="ml-2 p-2 rounded-full bg-theme-accent text-theme-accent3">📊</div>
-                          <div>
-                            <div className="font-medium">تحلیل بنیادی</div>
-                            <div className="text-xs text-theme-accent/80">تحلیل بنیادی بیش از ۳۰۰ شرکت تولیدی</div>
-                          </div>
+                        <Link to="/products/intro" className="flex items-center text-theme-accent hover:text-theme-accent3 transition-colors py-2 pr-4 rounded-lg justify-start text-right">
+                          <span className="p-2 rounded-full bg-theme-accent text-theme-accent3 flex-shrink-0 ml-2">📦</span>
+                          <span className="font-medium">معرفی محصولات</span>
                         </Link>
                       </li>
                       <li>
-                        <Link to="/products/nav" className="flex items-center text-theme-accent hover:text-theme-accent3 transition-colors">
-                          <div className="ml-2 p-2 rounded-full bg-theme-accent text-theme-accent3">📈</div>
-                          <div>
-                            <div className="font-medium">تحلیل NAV</div>
-                            <div className="text-xs text-theme-accent/80">تحلیل لحظه‌ای NAV شرکت‌های سرمایه‌گذاری</div>
-                          </div>
+                        <Link to="/articles" className="flex items-center text-theme-accent hover:text-theme-accent3 transition-colors py-2 pr-4 rounded-lg justify-start text-right">
+                          <span className="p-2 rounded-full bg-theme-accent text-theme-accent3 flex-shrink-0 ml-2">📚</span>
+                          <span className="font-medium">مقالات آموزشی و تخصصی</span>
                         </Link>
                       </li>
                       <li>
-                        <Link to="/products/shareholders" className="flex items-center text-theme-accent hover:text-theme-accent3 transition-colors">
-                          <div className="ml-2 p-2 rounded-full bg-theme-accent text-theme-accent3">👥</div>
-                          <div>
-                            <div className="font-medium">سهامداران</div>
-                            <div className="text-xs text-theme-accent/80">اطلاعات کامل سهامداران و معاملات آنها</div>
-                          </div>
-                        </Link>
+                        <div className="flex items-center text-theme-accent/70 cursor-not-allowed py-2 pr-4 rounded-lg justify-start text-right">
+                          <span className="p-2 rounded-full bg-theme-accent text-theme-accent3 flex-shrink-0 ml-2">🏦</span>
+                          <span>
+                            <span className="font-medium flex items-center gap-2">تحلیل صندوق‌های سرمایه‌گذاری <span className="text-xs bg-theme-accent2 text-theme-dark px-2 py-0.5 rounded">به زودی</span></span>
+                            <div className="text-xs text-theme-accent/80 mt-1">تحلیل عملکرد و وضعیت انواع صندوق‌های سرمایه‌گذاری</div>
+                          </span>
+                        </div>
                       </li>
+                      <li>
+                        <div className="flex items-center text-theme-accent/70 cursor-not-allowed py-2 pr-4 rounded-lg justify-start text-right">
+                          <span className="p-2 rounded-full bg-theme-accent text-theme-accent3 flex-shrink-0 ml-2">📝</span>
+                          <span>
+                            <span className="font-medium flex items-center gap-2">اختیار معامله <span className="text-xs bg-theme-accent2 text-theme-dark px-2 py-0.5 rounded">به زودی</span></span>
+                            <div className="text-xs text-theme-accent/80 mt-1">تحلیل عملکرد و وضعیت انواع صندوق‌های سرمایه‌گذاری</div>
+                          </span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="flex items-center text-theme-accent/70 cursor-not-allowed py-2 pr-4 rounded-lg justify-start text-right">
+                          <span className="p-2 rounded-full bg-theme-accent text-theme-accent3 flex-shrink-0 ml-2">📄</span>
+                          <span>
+                            <span className="font-medium flex items-center gap-2">کدال <span className="text-xs bg-theme-accent2 text-theme-dark px-2 py-0.5 rounded">به زودی</span></span>
+                            <div className="text-xs text-theme-accent/80 mt-1">ارائه کامل گزارشات کدال</div>
+                          </span>
+                        </div>
+                      </li>
+                    
                     </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-theme-accent mb-4 border-r-4 border-theme-accent pr-2">محصولات ویژه</h3>
-                    <ul className="space-y-3">
-                      <li>
-                        <Link to="/products/portfolio" className="flex items-center text-theme-accent hover:text-theme-accent3 transition-colors">
-                          <div className="ml-2 p-2 rounded-full bg-theme-accent text-theme-accent3">💼</div>
-                          <div>
-                            <div className="font-medium">سبد پیشنهادی</div>
-                            <div className="text-xs text-theme-accent/80">سبد سهام پیشنهادی با بازدهی بالا</div>
-                          </div>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/products/codal" className="flex items-center text-theme-accent hover:text-theme-accent3 transition-colors">
-                          <div className="ml-2 p-2 rounded-full bg-theme-accent text-theme-accent3">📝</div>
-                          <div>
-                            <div className="font-medium">کدال پلاس</div>
-                            <div className="text-xs text-theme-accent/80">دسترسی کامل به گزارش‌های کدال</div>
-                          </div>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/products/options" className="flex items-center text-theme-accent hover:text-theme-accent3 transition-colors">
-                          <div className="ml-2 p-2 rounded-full bg-theme-accent text-theme-accent3">🔄</div>
-                          <div>
-                            <div className="font-medium">اختیار معامله</div>
-                            <div className="text-xs text-theme-accent/80">ابزارهای تحلیل اختیار معامله</div>
-                          </div>
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="col-span-2 mt-4 p-3 bg-gradient-to-r from-theme-main to-theme-accent3 rounded-lg border border-theme-accent">
+                    <div className="col-span-2 mt-4 p-3 bg-gradient-to-r from-theme-main to-theme-accent3 rounded-lg border border-theme-accent">
                     <p className="text-center text-sm text-theme-accent">
                       مشاوره رایگان و تخصصی برای انتخاب بهترین بسته متناسب با نیاز شما
                       <Link to="/contact" className="mr-2 inline-flex items-center text-theme-accent font-medium hover:underline">
@@ -157,6 +135,7 @@ function Header() {
                         </svg>
                       </Link>
                     </p>
+                  </div>
                   </div>
                 </div>
               )}
@@ -206,34 +185,30 @@ function Header() {
             </button>
             {/* Mobile Mega Menu */}
             {productMenuOpen && (
-              <div className="bg-navy-dark border-t border-gold px-6 py-4 grid grid-cols-1 gap-4 animate-fadeIn">
-                <div>
-                  <h3 className="text-base font-bold text-gold mb-2 border-r-4 border-gold pr-2">محصولات اصلی</h3>
-                  <ul className="space-y-2">
-                    <li><Link to="/products/fundamental" className="block text-gold hover:text-navy transition-colors">تحلیل بنیادی</Link></li>
-                    <li><Link to="/products/nav" className="block text-gold hover:text-navy transition-colors">تحلیل NAV</Link></li>
-                    <li><Link to="/products/shareholders" className="block text-gold hover:text-navy transition-colors">سهامداران</Link></li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-gold mb-2 border-r-4 border-gold pr-2">محصولات ویژه</h3>
-                  <ul className="space-y-2">
-                    <li><Link to="/products/portfolio" className="block text-gold hover:text-navy transition-colors">سبد پیشنهادی</Link></li>
-                    <li><Link to="/products/codal" className="block text-gold hover:text-navy transition-colors">کدال پلاس</Link></li>
-                    <li><Link to="/products/options" className="block text-gold hover:text-navy transition-colors">اختیار معامله</Link></li>
-                  </ul>
-                </div>
-                <div className="col-span-2 mt-2 p-2 bg-gradient-to-r from-navy to-navy-dark rounded-lg border border-gold">
-                  <p className="text-center text-xs text-gold">
-                    مشاوره رایگان و تخصصی برای انتخاب بهترین بسته متناسب با نیاز شما
-                    <Link to="/contact" className="mr-2 inline-flex items-center text-gold font-medium hover:underline">
-                      تماس با کارشناسان
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </Link>
-                  </p>
-                </div>
+              <div className="bg-navy-dark border-t border-gold px-6 py-4 animate-fadeIn">
+                <ul className="space-y-2 text-right">
+                  <li>
+                    <Link to="/products/intro" className="flex items-center text-gold hover:text-navy transition-colors py-2 pr-4 rounded-lg justify-start text-right"> <span className="p-2 rounded-full bg-gold text-navy flex-shrink-0 mr-2">📦</span> <span>معرفی محصولات</span></Link>
+                  </li>
+                  <li>
+                    <Link to="/articles" className="flex items-center text-gold hover:text-navy transition-colors py-2 pr-4 rounded-lg justify-start text-right"> <span className="p-2 rounded-full bg-gold text-navy flex-shrink-0 mr-2">📚</span> <span>مقالات آموزشی و تخصصی</span></Link>
+                  </li>
+                  <li>
+                    <span className="flex items-center text-gold/60 cursor-not-allowed py-2 pr-4 rounded-lg justify-start text-right"> <span className="p-2 rounded-full bg-gold text-navy flex-shrink-0 mr-2">🏦</span> تحلیل صندوق‌های سرمایه‌گذاری <span className="text-xs bg-gold/30 text-navy px-2 py-0.5 rounded mr-2">به زودی</span></span>
+                    <div className="text-xs text-gold/50 text-right pr-10">تحلیل عملکرد و وضعیت انواع صندوق‌های سرمایه‌گذاری</div>
+                  </li>
+                  <li>
+                    <span className="flex items-center text-gold/60 cursor-not-allowed py-2 pr-4 rounded-lg justify-start text-right"> <span className="p-2 rounded-full bg-gold text-navy flex-shrink-0 mr-2">📝</span> اختیار معامله <span className="text-xs bg-gold/30 text-navy px-2 py-0.5 rounded mr-2">به زودی</span></span>
+                    <div className="text-xs text-gold/50 text-right pr-10">تحلیل عملکرد و وضعیت انواع صندوق‌های سرمایه‌گذاری</div>
+                  </li>
+                  <li>
+                    <span className="flex items-center text-gold/60 cursor-not-allowed py-2 pr-4 rounded-lg justify-start text-right"> <span className="p-2 rounded-full bg-gold text-navy flex-shrink-0 mr-2">📄</span> کدال <span className="text-xs bg-gold/30 text-navy px-2 py-0.5 rounded mr-2">به زودی</span></span>
+                    <div className="text-xs text-gold/50 text-right pr-10">ارائه کامل گزارشات کدال</div>
+                  </li>
+                  <li>
+                    <Link to="/contact" className="flex items-center text-gold hover:text-navy transition-colors py-2 pr-4 rounded-lg justify-start text-right"> <span className="p-2 rounded-full bg-gold text-navy flex-shrink-0 mr-2">☎️</span> <span>تماس با کارشناسان</span></Link>
+                  </li>
+                </ul>
               </div>
             )}
           </li>

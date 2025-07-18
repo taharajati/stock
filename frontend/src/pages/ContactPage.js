@@ -63,22 +63,28 @@ function ContactPage() {
     
     setLoading(true);
     try {
-      // Here you would typically make an API call to send the message
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulated API call
-      setAlert({
-        show: true,
-        type: 'success',
-        message: 'پیام شما با موفقیت ارسال شد. در اسرع وقت با شما تماس خواهیم گرفت.'
+      const res = await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
       });
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
-      setErrors({});
+      const data = await res.json();
+      if (res.ok) {
+        setAlert({
+          show: true,
+          type: 'success',
+          message: 'پیام شما با موفقیت ثبت شد.'
+        });
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setErrors({});
+      } else {
+        setAlert({
+          show: true,
+          type: 'error',
+          message: data.error || 'خطا در ارسال پیام.'
+        });
+      }
     } catch (error) {
-      console.error('Error sending message:', error);
       setAlert({
         show: true,
         type: 'error',
@@ -92,7 +98,7 @@ function ContactPage() {
   const contactInfo = [
     {
       title: 'آدرس',
-      content: 'تهران، خیابان ولیعصر، پلاک ۱۲۳',
+      content: 'تهران - میرداماد',
       icon: (
         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -102,7 +108,7 @@ function ContactPage() {
     },
     {
       title: 'تلفن',
-      content: '۰۲۱-۱۲۳۴۵۶۷۸',
+      content: '09303605214',
       icon: (
         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -111,7 +117,7 @@ function ContactPage() {
     },
     {
       title: 'ایمیل',
-      content: 'info@tahlilbors.com',
+      content: '',
       icon: (
         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -210,7 +216,7 @@ function ContactPage() {
               <h2 className="text-2xl font-bold text-navy mb-6">اطلاعات تماس</h2>
               
               <div className="space-y-6">
-                {contactInfo.map((info, index) => (
+                {contactInfo.filter(info => info.content).map((info, index) => (
                   <div key={index} className="flex items-start">
                     <div className="w-12 h-12 bg-gold/10 text-gold rounded-lg flex items-center justify-center ml-4">
                       {React.cloneElement(info.icon, { className: 'h-6 w-6 text-gold' })}
@@ -256,10 +262,10 @@ function ContactPage() {
                 <a
                   href="#"
                   className="w-12 h-12 bg-white border-2 border-gold-dark text-gold-dark rounded-full flex items-center justify-center shadow-md transition-all duration-200 hover:scale-110 hover:bg-gold/20 hover:border-gold hover:text-gold focus-visible:ring-2 focus-visible:ring-gold/50"
-                  aria-label="Twitter"
+                  aria-label="Telegram"
                 >
-                  <svg className="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                 <svg className="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M21.05 2.54a2.25 2.25 0 0 0-2.2-.18L3.7 9.13c-1.1.47-1.08 2.06.03 2.5l3.6 1.4 2.1 6.3c.3.9 1.5 1.1 2 .3l2.1-3.2 3.6 2.8c.8.6 2 .2 2.2-.8l2.7-13.1c.2-.9-.7-1.7-1.6-1.3zM9.7 15.2l-1.2-3.6 7.6-6.2-6.4 9.8zm2.7 2.1l-1.1-3.3 2.2 1.7-1.1 1.6zm6.2-2.2l-3.6-2.8 5.2-4.2-1.6 7z"/>
                   </svg>
                 </a>
                 <a

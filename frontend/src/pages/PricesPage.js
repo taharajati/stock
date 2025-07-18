@@ -1,51 +1,62 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import AnimatedCard from '../components/common/AnimatedCard.jsx';
+import AnimatedButton from '../components/common/AnimatedButton.jsx';
 
 function PricesPage() {
   const plans = [
     {
-      name: 'پایه',
+      name: 'رایگان',
       price: 'رایگان',
-      description: 'مناسب برای شروع کار با تحلیل بورس',
+      description: '',
       features: [
-        'دسترسی به داده‌های پایه بازار',
-        'مشاهده قیمت‌های لحظه‌ای',
-        'تحلیل‌های ساده تکنیکال',
-        'خبرنامه هفتگی',
-        'پشتیبانی ایمیلی'
+        'نمای بازار روزانه (به زودی)',
+        'دسترسی محدود شده به اطلاعات کدال (به زودی)',
+        'دسترسی به مقالات',
+        'دیدبان بازار اختیار (به زودی)'
       ],
-      buttonText: 'شروع رایگان',
+      buttonText: 'ثبت‌نام رایگان',
       buttonLink: '/register',
       popular: false
     },
     {
-      name: 'حرفه‌ای',
-      price: '۹۹ هزار تومان',
-      period: 'ماهانه',
-      description: 'مناسب برای معامله‌گران حرفه‌ای',
+      name: 'حرفه‌ای - حقیقی',
+      price: <span><span className="line-through text-gray-400">25 میلیون تومان</span> <span className="text-green-600 font-bold">12 میلیون</span> <span className="text-xs text-gray-500">برای ثبت‌نام تا ۳۱ دی</span></span>,
+      description: '',
       features: [
         'تمام امکانات پلن پایه',
-        'تحلیل‌های پیشرفته تکنیکال',
-        'تحلیل‌های بنیادی کامل',
-        'سیگنال‌های معاملاتی',
-        'پشتیبانی تلفنی',
-        'دسترسی به API',
-        'خبرنامه روزانه'
+        'دسترسی کامل به پنل صندوق‌های سرمایه‌گذاری (به زودی)',
+        'دسترسی به تمام امکانات کدال (به زودی)',
+        'دسترسی به تمام امکانات پنل اختیار معامله (به زودی)'
       ],
-      buttonText: 'انتخاب پلن حرفه‌ای',
-      buttonLink: '/register?plan=pro',
+      buttonText: 'ثبت‌نام حرفه‌ای حقیقی',
+      buttonLink: '/register?plan=pro-individual',
       popular: true
     },
     {
-      name: 'سازمانی',
-      price: 'تماس بگیرید',
-      description: 'مناسب برای شرکت‌ها و سازمان‌ها',
+      name: 'حرفه‌ای - حقوقی',
+      price: <span><span className="line-through text-gray-400">65 میلیون تومان</span> <span className="text-green-600 font-bold">30 میلیون</span> <span className="text-xs text-gray-500">برای ثبت‌نام تا ۳۱ دی</span></span>,
+      description: '',
       features: [
-        'تمام امکانات پلن حرفه‌ای',
-        'داشبورد اختصاصی',
+        'تمام امکانات پلن پایه (به زودی)',
+        'دسترسی کامل به پنل صندوق‌های سرمایه‌گذاری (به زودی)',
+        'دسترسی به تمام امکانات کدال (به زودی)',
+        'دسترسی به تمام امکانات پنل اختیار معامله (به زودی)'
+      ],
+      buttonText: 'ثبت‌نام حرفه‌ای حقوقی',
+      buttonLink: '/register?plan=pro-legal',
+      popular: false
+    },
+    {
+      name: 'سازمان',
+      price: 'تماس بگیرید',
+      description: '',
+      features: [
+        'تمام امکانات پنل حرفه‌ای',
+        'ارائه گزارشات تخصصی',
+        'ارائه گزارشات سفارشی متناسب با نیاز سازمان',
+        'بررسی و تحلیل عملکرد پرتفوی بورسی',
         'پشتیبانی اختصاصی',
-        'API اختصاصی',
-        'گزارش‌های سفارشی',
         'آموزش تخصصی',
         'همکاری در توسعه'
       ],
@@ -67,56 +78,47 @@ function PricesPage() {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {plans.map((plan, index) => (
-            <div 
+            <AnimatedCard
               key={index}
-              className={`relative bg-white rounded-2xl shadow-lg overflow-hidden border-2 transition-all duration-300 ${
-                plan.popular ? 'border-gold z-10 scale-105' : 'border-navy/20'
-              }`}
+              className={`relative rounded-2xl overflow-hidden border-t-4 p-8 text-center bg-theme-white text-theme-dark shadow-lg transition-all duration-300 ${
+                plan.popular ? 'border-theme-accent scale-105  z-10' : 'border-theme-accent2'
+              } hover:shadow-2xl hover:scale-105 animate-fade-in flex flex-col h-full`}
             >
               {plan.popular && (
-                <div className="absolute top-0 right-0 bg-gold text-navy px-4 py-1 rounded-bl-lg text-sm font-bold shadow">
-                  پرفروش‌ترین
-                </div>
+                <span className="absolute top-4 right-4 bg-theme-accent text-theme-dark px-4 py-1 rounded-bl-lg text-sm font-bold shadow">پرفروش‌ترین</span>
               )}
-              <div className="p-8">
-                <h3 className="text-2xl font-bold mb-2 text-navy">{plan.name}</h3>
-                <div className="mb-4">
-                  <span className={`text-4xl font-extrabold ${plan.popular ? 'text-gold' : 'text-navy'}`}>{plan.price}</span>
-                  {plan.period && (
-                    <span className="text-gray-600 text-lg mr-1">/{plan.period}</span>
-                  )}
-                </div>
-                <p className="text-gray-700 mb-6">{plan.description}</p>
-                <ul className="space-y-4 mb-8">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center">
-                      <svg className="h-5 w-5 text-gold ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-gray-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link
+              <div className="w-16 h-16 rounded-full bg-theme-accent/10 flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-theme-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" /></svg>
+              </div>
+              <h3 className="text-xl font-bold text-theme-dark mb-2">{plan.name}</h3>
+              <div className="text-2xl font-extrabold text-theme-accent mb-2">{plan.price}</div>
+              <ul className="text-theme-dark text-sm mb-6 space-y-2 text-center flex-grow">
+                {plan.features.map((feature, featureIndex) => (
+                  <li key={featureIndex} className="flex items-center justify-center">
+                    <svg className="h-5 w-5 text-theme-accent ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-auto">
+                <AnimatedButton
+                  as={Link}
                   to={plan.buttonLink}
-                  className={`block w-full py-3 px-6 text-center rounded-lg font-bold transition duration-300 border-2 ${
-                    plan.popular
-                      ? 'bg-gold text-navy border-gold hover:bg-gold-dark hover:text-white'
-                      : 'bg-white text-gold border-gold hover:bg-gold/10'
-                  }`}
+                  className={`bg-theme-accent text-theme-dark font-bold py-2 px-6 rounded-lg shadow hover:bg-theme-accent2 hover:text-theme transition-all duration-200 w-full`}
                 >
                   {plan.buttonText}
-                </Link>
+                </AnimatedButton>
               </div>
-            </div>
+            </AnimatedCard>
           ))}
         </div>
-
-        {/* Divider مینیمال طلایی */}
+        {/* Divider مینیمال accent */}
         <div className="w-full flex justify-center my-16">
-          <div className="h-px w-16 bg-gold shadow-gold/20 rounded-full"></div>
+          <div className="h-px w-16 bg-theme-accent2 shadow-theme-accent2/20 rounded-full"></div>
         </div>
 
         {/* FAQ Section */}

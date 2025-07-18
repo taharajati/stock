@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { isAuthenticated } = require('../middlewares/auth');
 const scrapers = require('../scrapers');
+const NewsletterSubscription = require('../models/NewsletterSubscription');
+const Message = require('../models/Message');
 
 // Mock data for companies - in a real app, this would come from a database or API
 const companies = [
@@ -91,6 +93,42 @@ router.get('/news/search/:company', isAuthenticated, async (req, res) => {
   } catch (error) {
     console.error('Error searching news:', error);
     res.status(500).json({ error: 'Error searching news' });
+  }
+});
+
+// Newsletter subscription endpoint
+router.post('/newsletter/subscribe', async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ error: 'ایمیل الزامی است.' });
+  }
+  try {
+    // Check for duplicate
+    const existing = await NewsletterSubscription.findOne({ email });
+    if (existing) {
+      return res.status(409).json({ error: 'این ایمیل قبلاً ثبت شده است.' });
+    }
+    // Save new subscription
+    const sub = new NewsletterSubscription({ email });
+    await sub.save();
+    res.status(201).json({ message: 'عضویت با موفقیت انجام شد.' });
+  } catch (err) {
+    res.status(500).json({ error: 'خطا در ذخیره‌سازی عضویت.', details: err.message });
+  }
+});
+
+// Contact form message endpoint
+router.post('/messages', async (req, res) => {
+  const { name, email, subject, message } = req.body;
+  if (!name || !email || !subject || !message) {
+    return res.status(400).json({ error: 'همه فیلدها الزامی است.' });
+  }
+  try {
+    const msg = new Message({ name, email, subject, message });
+    await msg.save();
+    res.status(201).json({ message: 'پیام شما با موفقیت ثبت شد.' });
+  } catch (err) {
+    res.status(500).json({ error: 'خطا در ذخیره پیام.', details: err.message });
   }
 });
 

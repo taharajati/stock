@@ -5,6 +5,10 @@ function ArticlesPage() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // Newsletter state
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterStatus, setNewsletterStatus] = useState('idle'); // idle | loading | success | error
+  const [newsletterMsg, setNewsletterMsg] = useState('');
 
   useEffect(() => {
     async function fetchArticles() {
@@ -130,19 +134,54 @@ function ArticlesPage() {
             <p className="text-xl mb-8 text-gray-700">
               برای دریافت جدیدترین مقالات و تحلیل‌های بازار در خبرنامه ما عضو شوید
             </p>
-            <form className="flex flex-col sm:flex-row gap-4">
+            <form
+              className="flex flex-col sm:flex-row gap-4"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (!newsletterEmail) return;
+                setNewsletterStatus('loading');
+                setNewsletterMsg('');
+                try {
+                  const res = await fetch('/api/newsletter/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: newsletterEmail })
+                  });
+                  const data = await res.json();
+                  if (res.ok) {
+                    setNewsletterStatus('success');
+                    setNewsletterMsg('عضویت شما با موفقیت انجام شد.');
+                    setNewsletterEmail('');
+                  } else {
+                    setNewsletterStatus('error');
+                    setNewsletterMsg(data.error || 'خطا در عضویت.');
+                  }
+                } catch (err) {
+                  setNewsletterStatus('error');
+                  setNewsletterMsg('خطا در ارتباط با سرور.');
+                }
+              }}
+            >
               <input
                 type="email"
                 placeholder="ایمیل خود را وارد کنید"
                 className="flex-1 px-6 py-3 rounded-lg text-navy border-2 border-gold focus:outline-none focus:ring-2 focus:ring-gold"
+                value={newsletterEmail}
+                onChange={e => setNewsletterEmail(e.target.value)}
+                disabled={newsletterStatus === 'loading'}
+                required
               />
               <button
                 type="submit"
                 className="bg-gold text-navy border-2 border-gold px-8 py-3 rounded-lg font-bold hover:bg-gold-dark hover:text-white transition duration-300"
+                disabled={newsletterStatus === 'loading' || !newsletterEmail}
               >
-                عضویت در خبرنامه
+                {newsletterStatus === 'loading' ? 'در حال ارسال...' : 'عضویت در خبرنامه'}
               </button>
             </form>
+            {newsletterMsg && (
+              <div className={`mt-4 text-lg ${newsletterStatus === 'success' ? 'text-green-600' : 'text-red-500'}`}>{newsletterMsg}</div>
+            )}
           </div>
         </div>
 
