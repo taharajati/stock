@@ -1,13 +1,18 @@
 {
   "files": {
-    "main.css": "/static/css/main.a5a4a710.css",
-    "main.js": "/static/js/main.bec64a92.js",
+    "main.css": "/static/css/main.7309442c.css",
+    "main.js": "/static/js/main.740670e8.js",
+    "static/media/Lalezar-Regular.ttf": "/static/media/Lalezar-Regular.4cbab4c9f26cf13014c6.ttf",
+    "static/media/Vazir-Medium.ttf": "/static/media/Vazir-Medium.36bc3e5e26823f9e9af8.ttf",
+    "static/media/Digi Mitra Circle Bold.ttf": "/static/media/Digi Mitra Circle Bold.478b08ca7e2ced0ce01b.ttf",
+    "static/media/Digi Mitra Rectangle Bold.ttf": "/static/media/Digi Mitra Rectangle Bold.eca958d604cec75bd600.ttf",
+    "static/media/Iranian Sans.ttf": "/static/media/Iranian Sans.8c2ed8fb0154947263c5.ttf",
     "index.html": "/index.html",
-    "main.a5a4a710.css.map": "/static/css/main.a5a4a710.css.map",
-    "main.bec64a92.js.map": "/static/js/main.bec64a92.js.map"
+    "main.7309442c.css.map": "/static/css/main.7309442c.css.map",
+    "main.740670e8.js.map": "/static/js/main.740670e8.js.map"
   },
   "entrypoints": [
-    "static/css/main.a5a4a710.css",
-    "static/js/main.bec64a92.js"
+    "static/css/main.7309442c.css",
+    "static/js/main.740670e8.js"
   ]
 }
