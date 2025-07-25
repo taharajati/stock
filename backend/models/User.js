@@ -2,11 +2,6 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  googleId: {
-    type: String,
-    unique: true,
-    sparse: true
-  },
   email: {
     type: String,
     required: true,
@@ -17,7 +12,6 @@ const userSchema = new mongoose.Schema({
   displayName: String,
   firstName: String,
   lastName: String,
-  photo: String,
   password: {
     type: String,
     select: false, // Don't include password in queries by default

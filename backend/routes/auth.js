@@ -14,10 +14,6 @@ router.get('/', (req, res) => {
       displayName: req.user.displayName
     } : null,
     availableEndpoints: {
-      google: {
-        login: 'GET /auth/google',
-        callback: 'GET /auth/google/callback'
-      },
       email: {
         login: 'POST /auth/login',
         setupPassword: 'POST /auth/setup-password'
@@ -32,50 +28,6 @@ router.get('/', (req, res) => {
   
   res.json(authInfo);
 });
-
-// Start Google OAuth login process
-router.get('/google', (req, res, next) => {
-  console.log('Starting Google OAuth login process');
-  const state = req.query.redirect || '/dashboard';
-  passport.authenticate('google', {
-    scope: ['profile', 'email'],
-    state: state,
-    prompt: 'select_account'
-  })(req, res, next);
-});
-
-// Google OAuth callback
-router.get('/google/callback', 
-  (req, res, next) => {
-    console.log('Received Google OAuth callback with state:', req.query.state);
-    passport.authenticate('google', { 
-      failureRedirect: '/login',
-      failureMessage: true,
-      session: true,
-      keepSessionInfo: true
-    })(req, res, next);
-  },
-  (req, res) => {
-    console.log('Google OAuth successful, user:', {
-      id: req.user._id,
-      email: req.user.email,
-      displayName: req.user.displayName
-    });
-
-    // Get redirect URL from state or use default
-    const redirectUrl = req.query.state || '/dashboard';
-    const baseUrl = process.env.CLIENT_URL || 'https://easyvest.ir';
-
-    // If user hasn't set a password, redirect to password setup page
-    if (!req.user.hasSetPassword) {
-      console.log('User needs to set password, redirecting to setup page');
-      res.redirect(`${baseUrl}/setup-password`);
-    } else {
-      console.log('User authenticated, redirecting to:', redirectUrl);
-      res.redirect(`${baseUrl}${redirectUrl}`);
-    }
-  }
-);
 
 // Email/password login
 router.post('/login', async (req, res) => {
