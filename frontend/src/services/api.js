@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || window.location.origin,
+  baseURL: window.location.origin,
   withCredentials: true, // Important for cookies/session
   headers: {
     'Content-Type': 'application/json',
